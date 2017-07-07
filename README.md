@@ -32,4 +32,17 @@ the project will demostrate an online store search service including
 * Search products from elasticsearch (simple RPC)
 * Calculate products score (bi-directional streaming)
 
+### Gradle Best Practice
+* add gradle wrapper, so that it can be run anywhere
+
+```
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0'
+}
+
+> gradle wrapper
+```
+
+ 
+
  
