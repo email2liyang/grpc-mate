@@ -1,5 +1,13 @@
 subprojects {
     apply plugin: 'java'
+
+    configurations.all {
+        resolutionStrategy {
+            // fail eagerly on version conflict (includes transitive dependencies)
+            // e.g. multiple different versions of the same dependency (group and name are equal)
+//            failOnVersionConflict()
+        }
+    }
 }
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0'
