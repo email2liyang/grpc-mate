@@ -15,7 +15,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * TestNG best practice
 * Guice best practice
 * Docker-Java best practice
-* [Proto buffer best practice](#Proto-buffer-best-practice) 
+* [Proto buffer best practice](#proto-buffer-best-practice) 
 * Quality Control best practice
   * CheckStyle
   * FindBug
