@@ -76,6 +76,8 @@ dependencies {
 }
 
 clean {
-    // remove auto-generated files on clean
-    delete "${projectDir}/src/generated"
+    doLast {
+        // remove auto-generated files on clean
+        delete "${projectDir}/src/generated"
+    }
 }

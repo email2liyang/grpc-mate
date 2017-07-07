@@ -10,7 +10,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * Authentication
 * Promethues integration
 * Kubernetes Deployment
-* Gradle multiple builds best practice
+* [Gradle multiple builds best practice](#gradle-best-practice)
 * Mockito best practice
 * TestNG best practice
 * Guice best practice
@@ -42,7 +42,31 @@ task wrapper(type: Wrapper) {
 
 > gradle wrapper
 ```
+* remove auto generated classes in clean task
 
+```groovy
+clean {
+    doLast {
+        // remove auto-generated files on clean
+        delete "${projectDir}/src/generated"
+    }
+}
+```
+* we force gradle to detect version conflict on build
+
+```groovy
+subprojects {
+    apply plugin: 'java'
+
+    configurations.all {
+        resolutionStrategy {
+            // fail eagerly on version conflict (includes transitive dependencies)
+            // e.g. multiple different versions of the same dependency (group and name are equal)
+            failOnVersionConflict()
+        }
+    }
+}
+```
  
 
  
