@@ -1,23 +1,41 @@
 .gradle
-# Compiled class file
-*.class
+**/.gradle
+**/pom.xml
+build
+out
+wiki
+**/.DS_Store
+**/*java.orig
+.DS_Store
+**/.classpath
+**/.settings
+datastore-coprocessor-onprem/*.jar
+**/target
+**/classes
+**/.DS_Store
+**/.project
+**/bin
+**/pkg
+.pydevproject
+**/*.log
+**/*.exe
+.idea
+**/idea
+*.iml
+**/*.iml
+*.ipr
+**/*.ipr
+*.iws
+**/*.iws
+**/node_modules
+**/war
+tmp
+# Ignore classes ending in Transient
+**/*Transient.java
+atlassian-ide-plugin.xml
+**/.gz
+**/.tar
+**/.clover
+**/generated*
+.gitignore
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
