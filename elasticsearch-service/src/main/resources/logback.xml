@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--out put to stdout will make container service easy to grap log and send to stack driver-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- See http://logback.qos.ch/manual/layouts.html#PatternLayout -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{128} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.grpc" level="WARN"/>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
