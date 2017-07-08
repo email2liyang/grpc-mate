@@ -83,4 +83,27 @@ gen: clean
 option java_package = "io.datanerd.generated.common";
 option java_multiple_files = true;
 ```
+* [proto buffer name best practice](https://developers.google.com/protocol-buffers/docs/style)
+  * use CamelCase (with an initial capital) for message names
+  * use CamelCase (with an initial capital) for grpc service name
+  * use underscore_separated_names for field names
+  * use CamelCase (with an initial capital) for enum type names and CAPITALS_WITH_UNDERSCORES for value names
+```proto
+service ProductUpdateService {
+    //upload product into elastic search , make it so that we could search on it
+    //used to demo client side stream
+    rpc UploadProduct (stream Product) returns (UploadProductResponse) {
+
+    }
+}
+
+
+message UploadProductResponse {
+    enum ResultStatus {
+        SUCCESS = 0;
+        FAILED = 1;
+    }
+    ResultStatus result_status = 1;
+}
+```  
  
