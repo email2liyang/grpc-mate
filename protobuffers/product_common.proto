@@ -7,6 +7,7 @@ message Product {
     string product_name = 2;
     double product_price = 3;
     ProductStatus product_status = 4;
+    string category = 5;
 }
 
 enum ProductStatus {
