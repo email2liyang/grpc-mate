@@ -55,6 +55,9 @@ dependencies {
     compile 'ch.qos.logback:logback-core:1.2.3'
     compile 'ch.qos.logback:logback-classic:1.2.3'
 
+    // config
+    compile 'org.apache.commons:commons-configuration2:2.1.1'
+
     // gRPC
     compile 'io.grpc:grpc-netty:1.4.0'
     compile 'io.grpc:grpc-protobuf:1.4.0'
