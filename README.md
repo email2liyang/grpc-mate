@@ -14,8 +14,8 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * Mockito best practice
 * TestNG best practice
 * Guice best practice
-* Docker-Java best practice
 * [Proto buffer best practice](#proto-buffer-best-practice) 
+* [Docker best practice](#docker-best-practice)
 * Quality Control best practice
   * CheckStyle
   * FindBug
@@ -106,4 +106,7 @@ message UploadProductResponse {
     ResultStatus result_status = 1;
 }
 ```  
- 
+### Docker best practice 
+* we can use docker to simulate external service (e.g elasticsearch) in unit test
+  * in this demo project , we will an [elasitcsearch image](https://github.com/email2liyang/elasticsearch-unit-image) for unit test purpose only
+  * user can download it by command ```make pull_image``` to get latest test image
