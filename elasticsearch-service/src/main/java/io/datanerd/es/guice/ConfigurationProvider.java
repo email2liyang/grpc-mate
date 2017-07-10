@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2015 Practice Insight Pty Ltd.
- */
-
 package io.datanerd.es.guice;
 
 import com.google.inject.Provider;
