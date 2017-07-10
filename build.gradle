@@ -1,5 +1,8 @@
 subprojects {
     apply plugin: 'java'
+    apply from: "$rootDir/gradle/checkstyle.gradle"
+    apply from: "$rootDir/gradle/findbugs.gradle"
+    apply from: "$rootDir/gradle/jacoco.gradle"
 
     configurations.all {
         resolutionStrategy {
@@ -9,6 +12,7 @@ subprojects {
         }
     }
 }
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.1'
 }

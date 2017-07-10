@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+
 /**
  * Build Property based configuration, at runtime, the property file can be mounted from kubernetes config map.
+ *
  * @author email2liyang@gmail.com
  */
 public class ConfigurationProvider implements Provider<Configuration> {
@@ -22,16 +24,16 @@ public class ConfigurationProvider implements Provider<Configuration> {
 
   public ConfigurationProvider() {
     SystemConfiguration sysConfig = new SystemConfiguration();
-    propertyFilePath = sysConfig.getString(Constants.CONFIG_PROP_FILE_PATH,Constants.CONFIG_PROP_FILE_PATH_DEFAULT);
+    propertyFilePath = sysConfig.getString(Constants.CONFIG_PROP_FILE_PATH, Constants.CONFIG_PROP_FILE_PATH_DEFAULT);
   }
 
   @Override
   public Configuration get() {
     Configurations configs = new Configurations();
-    try{
+    try {
       return configs.properties(new File(getPropertyFilePath()));
     } catch (ConfigurationException e) {
-      log.error(" error on build configuration",e);
+      log.error(" error on build configuration", e);
       throw new IllegalStateException(e);
     }
   }
