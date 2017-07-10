@@ -16,10 +16,10 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * Guice best practice
 * [Proto buffer best practice](#proto-buffer-best-practice) 
 * [Docker best practice](#docker-best-practice)
-* Quality Control best practice
+* [Quality control best practice](#quality-control-best-practice)
   * CheckStyle
   * FindBug
-  * PMD
+  * Jacoco
 
 ### Demo  Script
 the project will demostrate an online store search service including
@@ -110,3 +110,27 @@ message UploadProductResponse {
 * we can use docker to simulate external service (e.g elasticsearch) in unit test
   * in this demo project , we will an [elasitcsearch image](https://github.com/email2liyang/elasticsearch-unit-image) for unit test purpose only
   * user can download it by command ```make pull_image``` to get latest test image
+
+### Quality control best practice
+* CheckStyle 
+  * apply [Google Java Style] (http://checkstyle.sourceforge.net/google_style.html)
+  * user can exclude any file from checkstyle(e.g: grpc generated java file) by adding it to gradle/google_checks_suppressions.xml
+* FindBugs
+  * user can exclude any file from findbugs(e.g: grpc generated java file) by adding it to findbugs_exclude_filter.xml
+* Jacoco
+  * Jacoco related tasks are not bind to check and test task, we can bind jacoco related tasks to test by 
+```groovy
+    test.finalizedBy(jacocoTestReport,jacocoTestCoverageVerification)
+```    
+  * use can add multiple rules in jacocoTestCoverageVerification
+  * user can exclude any package from jacoco report in afterEvaluate config
+```groovy
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                     exclude: ['**/generated/**',
+                               'com/google/**'])
+        })
+    }
+``` 
+  * Line coverage ratio on package level is the most meaningful standard on code coverage perspective
