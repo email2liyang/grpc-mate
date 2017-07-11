@@ -1,7 +1,9 @@
 gRPC-Mate - An enterprise ready micro service project base on [gRPC-Java](https://github.com/grpc/grpc-java)
 ========================================
 gRPC-Mate demostrate best practice for gRPC based micro service.
+
 [![Build Status](https://travis-ci.org/email2liyang/grpc-mate.svg?branch=master)](https://travis-ci.org/email2liyang/grpc-mate)
+
 * Grpc features
   * Simple RPC
   * Server streaming
