@@ -1,6 +1,8 @@
+sudo: required
 language: java
-sudo: enabled
-install: make pull_image
+services:
+  - docker
+before_install: make pull_image
 script: make build
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
