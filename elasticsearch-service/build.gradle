@@ -47,6 +47,7 @@ dependencies {
 
     // Utils
     compile 'com.google.guava:guava:22.0'
+    compile 'commons-beanutils:commons-beanutils:1.9.3'
 
 
     // logging bridges
