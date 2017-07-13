@@ -14,7 +14,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * Kubernetes Deployment
 * [Gradle multiple builds best practice](#gradle-best-practice)
 * Mockito best practice
-* TestNG best practice
+* Junit best practice
 * Guice best practice
 * [Proto buffer best practice](#proto-buffer-best-practice) 
 * [Docker best practice](#docker-best-practice)
@@ -136,3 +136,4 @@ message UploadProductResponse {
     }
 ``` 
   * Line coverage ratio on package level is the most meaningful standard on code coverage perspective
+  * Jacoco will work with Junit out of box, for TestNG, it need extra config to make jacoco to work.
