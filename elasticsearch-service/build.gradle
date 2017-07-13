@@ -45,6 +45,10 @@ dependencies {
     // DI
     compile 'com.google.inject:guice:4.1.0'
 
+    // Utils
+    compile 'com.google.guava:guava:22.0'
+
+
     // logging bridges
     compile 'org.slf4j:jul-to-slf4j:1.7.25'
     compile 'org.slf4j:slf4j-api:1.7.25'
