@@ -8,6 +8,7 @@
     </appender>
 
     <logger name="io.grpc" level="INFO"/>
+    <logger name="org.apache.commons" level="INFO"/>
 
     <root>
         <!-- This is the default logger level, but classes or packages can be easily -->
