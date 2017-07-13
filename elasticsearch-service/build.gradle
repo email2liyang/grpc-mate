@@ -77,7 +77,7 @@ dependencies {
     compile 'io.prometheus:simpleclient_common:0.0.23'
 
     // test dependencies
-    testCompile 'org.testng:testng:6.11'
+    testCompile 'junit:junit:4.12'
     testCompile 'com.github.javafaker:javafaker:0.13'
     testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'org.assertj:assertj-core:3.8.0'

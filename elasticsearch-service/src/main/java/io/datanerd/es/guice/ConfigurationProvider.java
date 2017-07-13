@@ -41,8 +41,4 @@ public class ConfigurationProvider implements Provider<Configuration> {
   public String getPropertyFilePath() {
     return propertyFilePath;
   }
-
-  public void setPropertyFilePath(String propertyFilePath) {
-    this.propertyFilePath = propertyFilePath;
-  }
 }

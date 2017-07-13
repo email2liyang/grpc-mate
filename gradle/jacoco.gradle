@@ -24,7 +24,8 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             element = 'PACKAGE'
-            excludes = ['com.google.*']
+            excludes = ['com.google.*',
+            'io.datanerd.generated*']
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
@@ -34,4 +35,4 @@ jacocoTestCoverageVerification {
     }
 }
 //make sure jacoco related task run after test
-test.finalizedBy(jacocoTestReport,jacocoTestCoverageVerification)
+test.finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)

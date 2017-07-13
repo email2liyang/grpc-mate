@@ -5,4 +5,5 @@
 
 <suppressions>
     <suppress checks="[a-zA-Z0-0]*" files="io[\\/]datanerd[\\/]generated[\\/]"/>
+    <suppress checks="[a-zA-Z0-0]*" files="[/\\]src[/\\]test[/\\]java[/\\]"/>
 </suppressions>
