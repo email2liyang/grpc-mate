@@ -1,3 +1,6 @@
+plugins {
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
 subprojects {
     apply plugin: 'java'
     apply from: "$rootDir/gradle/checkstyle.gradle"
@@ -12,6 +15,7 @@ subprojects {
         }
     }
 }
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.1'
