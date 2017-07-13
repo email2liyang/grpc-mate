@@ -6,8 +6,8 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        xml.enabled false
-        csv.enabled true
+        xml.enabled true
+        csv.enabled false
         html.enabled true
     }
 
