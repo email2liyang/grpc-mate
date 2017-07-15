@@ -14,15 +14,15 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * Promethues integration
 * Kubernetes Deployment
 * [Gradle multiple builds best practice](#gradle-best-practice)
-* Mockito best practice
-* Junit best practice
 * Guice best practice
+* Mockito best practice
+* [Junit best practice](#junit-best-practice)
 * [Proto buffer best practice](#proto-buffer-best-practice) 
 * [Docker best practice](#docker-best-practice)
 * [Quality control best practice](#quality-control-best-practice)
-  * CheckStyle
-  * FindBug
-  * Jacoco
+  * [CheckStyle](#checkStyle)
+  * [FindBug](#findBug)
+  * [Jacoco](#jacoco)
 
 ### Demo  Script
 the project will demostrate an online store search service including
@@ -68,6 +68,30 @@ subprojects {
     }
 }
 ```
+### Junit best practice
+* use [testcontainers-java](https://github.com/testcontainers/testcontainers-java), we could launch any docker image to support any env related class
+* it's convenient to use JUnit Rule and ClassRule with docker container for test see [TransportClientProviderTest.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/guice/TransportClientProviderTest.java) for more details
+```java
+  @ClassRule
+  public static final GenericContainer esContainer = new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
+      .withExposedPorts(9200,9300);
+```
+* user can use Guice Modules.override() method to override any default configuration in test
+```java
+MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_HOST,ip);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_PORT,transportPort);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_NAME,"elasticsearch");
+    Injector injector = Guice.createInjector(
+        Modules.override(new ElasticSearchModule()).with(
+            binder -> {
+              binder.bind(Configuration.class).toInstance(memoryParams);
+            }
+        )
+    );
+```
+
+
 ### Proto buffer best practice
 * define all proto file in top level of project for larger organization, it's a good idea to store all protobuffer file into a dedicated git repository, then checkout the proto buffer repository as a git submodule, then we could have single place to define all the grpc service and message to share across projects
 * define Makefile to generate java code , then it's easy to detect any issue for proto buffer definition.
@@ -115,18 +139,18 @@ message UploadProductResponse {
   * user can download it by command ```make pull_image``` to get latest test image
 
 ### Quality control best practice
-* CheckStyle 
-  * apply [Google Java Style] (http://checkstyle.sourceforge.net/google_style.html)
-  * user can exclude any file from checkstyle(e.g: grpc generated java file) by adding it to gradle/google_checks_suppressions.xml
-* FindBugs
-  * user can exclude any file from findbugs(e.g: grpc generated java file) by adding it to findbugs_exclude_filter.xml
-* Jacoco
-  * Jacoco related tasks are not bind to check and test task, we can bind jacoco related tasks to test by 
+#### CheckStyle 
+* apply [Google Java Style] (http://checkstyle.sourceforge.net/google_style.html)
+* user can exclude any file from checkstyle(e.g: grpc generated java file) by adding it to gradle/google_checks_suppressions.xml
+#### FindBugs
+* user can exclude any file from findbugs(e.g: grpc generated java file) by adding it to findbugs_exclude_filter.xml
+#### Jacoco
+* Jacoco related tasks are not bind to check and test task, we can bind jacoco related tasks to test by 
 ```groovy
     test.finalizedBy(jacocoTestReport,jacocoTestCoverageVerification)
 ```    
-  * use can add multiple rules in jacocoTestCoverageVerification
-  * user can exclude any package from jacoco report in afterEvaluate config
+* use can add multiple rules in jacocoTestCoverageVerification
+* user can exclude any package from jacoco report in afterEvaluate config
 ```groovy
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
@@ -136,5 +160,5 @@ message UploadProductResponse {
         })
     }
 ``` 
-  * Line coverage ratio on package level is the most meaningful standard on code coverage perspective
-  * Jacoco will work with Junit out of box, for TestNG, it need extra config to make jacoco to work.
+* Line coverage ratio on package level is the most meaningful standard on code coverage perspective
+* Jacoco will work with Junit out of box, for TestNG, it need extra config to make jacoco to work.
