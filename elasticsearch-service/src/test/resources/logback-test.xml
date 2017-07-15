@@ -8,6 +8,10 @@
     </appender>
 
     <logger name="io.grpc" level="INFO"/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="com.github.dockerjava" level="WARN"/>
+    <logger name="org.zeroturnaround.exec" level="WARN"/>
+    <logger name="org.rnorth" level="INFO"/>
     <logger name="org.apache.commons" level="INFO"/>
 
     <root>
