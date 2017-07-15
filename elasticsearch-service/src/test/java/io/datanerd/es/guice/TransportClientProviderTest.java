@@ -28,7 +28,7 @@ public class TransportClientProviderTest {
   private static Logger log = LoggerFactory.getLogger(TransportClientProviderTest.class); //NOPMD
   private TransportClientProvider transportClientProvider;
   @ClassRule
-  public static GenericContainer esContainer = new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
+  public static final GenericContainer esContainer = new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
       .withExposedPorts(9200,9300);
 
   @Before
