@@ -20,8 +20,8 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * [Proto buffer best practice](#proto-buffer-best-practice) 
 * [Docker best practice](#docker-best-practice)
 * [Quality control best practice](#quality-control-best-practice)
-  * [CheckStyle](#checkStyle)
-  * [FindBug](#findBug)
+  * [CheckStyle](#checkstyle)
+  * [FindBug](#findbug)
   * [Jacoco](#jacoco)
 
 ### Demo  Script
