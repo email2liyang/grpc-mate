@@ -73,8 +73,9 @@ subprojects {
 * it's convenient to use JUnit Rule and ClassRule with docker container for test see [TransportClientProviderTest.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/guice/TransportClientProviderTest.java) for more details
 ```java
   @ClassRule
-  public static final GenericContainer esContainer = new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
-      .withExposedPorts(9200,9300);
+  public static final GenericContainer esContainer = 
+      new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
+        .withExposedPorts(9200,9300);
 ```
 * user can use Guice Modules.override() method to override any default configuration in test
 ```java
