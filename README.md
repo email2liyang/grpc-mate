@@ -5,17 +5,16 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 [![Build Status](https://travis-ci.org/email2liyang/grpc-mate.svg?branch=master)](https://travis-ci.org/email2liyang/grpc-mate)
 [![Coverage Status](https://coveralls.io/repos/github/email2liyang/grpc-mate/badge.svg?branch=master)](https://coveralls.io/github/email2liyang/grpc-mate?branch=master)
 
-* Grpc features
+* [Grpc best practice](#grpc-best-practice)
   * Simple RPC
   * Server streaming
-  * Client streaming
+  * [Client streaming](#client-streaming)
   * Bi-directional streaming
   * Authentication
 * Promethues integration
 * Kubernetes Deployment
 * [Gradle multiple builds best practice](#gradle-best-practice)
-* Guice best practice
-* Mockito best practice
+* [Mockito best practice](#mockito-best-practice)
 * [Junit best practice](#junit-best-practice)
 * [Proto buffer best practice](#proto-buffer-best-practice) 
 * [Docker best practice](#docker-best-practice)
@@ -32,7 +31,24 @@ the project will demostrate an online store search service including
 * Downloading products from Elasticsearch (server streaming)
 * Search products from elasticsearch (simple RPC)
 * Calculate products score (bi-directional streaming)
-
+### Grpc best practice
+#### Client streaming
+* use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
+```java
+PublishSubject<Product> publishSubject = PublishSubject.create();
+    publishSubject
+        .doOnNext(product -> {
+          log.info("saving product - {} ", product);
+          productDao.upsertProduct(product);
+        })
+        .doOnError(t -> responseObserver.onError(t))
+        .doOnComplete(() -> {
+          responseObserver.onNext(UploadProductResponse.newBuilder().build());
+          responseObserver.onCompleted();
+        })
+        .subscribe();
+```
+* use grpc's InProcessServer to test grpc service
 ### Gradle Best Practice
 * add gradle wrapper, so that it can be run anywhere
 
@@ -67,6 +83,18 @@ subprojects {
         }
     }
 }
+```
+### Mockito best practice
+* use Mockito to mock dao method in service test, so that we do not launch docker container to provide ES env
+* use Guice to inject any mocked instance into the dependency graph in unit test
+```java
+productDao = mock(ProductDao.class);
+    injector = Guice.createInjector(
+        Modules.override(new ElasticSearchModule())
+            .with(binder -> {
+              binder.bind(ProductDao.class).toInstance(productDao);
+            })
+    );
 ```
 ### Junit best practice
 * use [testcontainers-java](https://github.com/testcontainers/testcontainers-java), we could launch any docker image to support any env related class
