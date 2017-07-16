@@ -24,20 +24,21 @@ public class ProductUpdateService extends ProductUpdateServiceGrpc.ProductUpdate
   private static Logger log = LoggerFactory.getLogger(ProductUpdateService.class); //NOPMD
   @Inject
   private ProductDao productDao;
+
   @Override
   public StreamObserver<Product> uploadProduct(StreamObserver<UploadProductResponse> responseObserver) {
     PublishSubject<Product> publishSubject = PublishSubject.create();
     publishSubject
         .doOnNext(product -> {
-          log.info("saving product - {} ",product);
+          log.info("saving product - {} ", product);
           productDao.upsertProduct(product);
         })
-        .doOnError(t->responseObserver.onError(t))
-        .doOnComplete(()->{
+        .doOnError(t -> responseObserver.onError(t))
+        .doOnComplete(() -> {
           responseObserver.onNext(UploadProductResponse.newBuilder().build());
           responseObserver.onCompleted();
         })
-    .subscribe();
+        .subscribe();
     return new RxStreamObserver<>(publishSubject);
   }
 }
