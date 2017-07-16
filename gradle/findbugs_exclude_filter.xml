@@ -2,4 +2,7 @@
     <Match>
         <Package name="~io\.datanerd\.generated\.common\.*"/>
     </Match>
+    <Match>
+        <Package name="~io\.datanerd\.generated\.es\.*"/>
+    </Match>
 </FindBugsFilter>
