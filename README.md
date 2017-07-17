@@ -114,11 +114,12 @@ MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
     Injector injector = Guice.createInjector(
         Modules.override(new ElasticSearchModule()).with(
             binder -> {
-              binder.bind(Configuration.class).toInstance(memoryParams);
+              binder.bind(Configuration.class).toProvider(() -> memoryParams);
             }
         )
     );
 ```
+* use toProvider(()->xxx); to avoid dedicated provider logic to execute
 
 
 ### Proto buffer best practice
