@@ -52,7 +52,7 @@ public class ProductUpdateServiceTest {
     injector = Guice.createInjector(
         Modules.override(new ElasticSearchModule())
             .with(binder -> {
-              binder.bind(ProductDao.class).toInstance(productDao);
+              binder.bind(ProductDao.class).toProvider(() -> productDao);
             })
     );
 
@@ -97,7 +97,7 @@ public class ProductUpdateServiceTest {
     Product product = Product.newBuilder()
         .setProductId(faker.number().randomNumber())
         .setProductName(faker.company().name())
-        .setProductPrice(faker.number().randomDouble(2,10,100))
+        .setProductPrice(faker.number().randomDouble(2, 10, 100))
         .setProductStatus(ProductStatus.InStock)
         .build();
     ImmutableList
@@ -113,7 +113,7 @@ public class ProductUpdateServiceTest {
     assertThat(responseHolder.size()).isEqualTo(1);
     assertThat(exceptionHolder).isEmpty();
     assertThat(completed).isTrue();
-    verify(productDao,times(3)).upsertProduct(any());
+    verify(productDao, times(3)).upsertProduct(any());
   }
 
 }

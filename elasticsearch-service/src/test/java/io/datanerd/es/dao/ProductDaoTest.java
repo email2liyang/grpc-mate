@@ -2,26 +2,89 @@ package io.datanerd.es.dao;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.util.Modules;
+import com.google.protobuf.util.JsonFormat;
 
 import com.github.javafaker.Faker;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.MapConfiguration;
+import org.elasticsearch.action.admin.cluster.stats.ClusterStatsResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.client.transport.TransportClient;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.testcontainers.containers.GenericContainer;
 
+import java.util.HashMap;
+
+import io.datanerd.es.guice.ElasticSearchModule;
 import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
 
+import static io.datanerd.es.dao.ProductDao.INDEX;
+import static io.datanerd.es.dao.ProductDao.TYPE;
+import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_HOST;
+import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_NAME;
+import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ProductDaoTest {
 
-  private Faker faker;
-  private ProductDao productDao;
-  private Injector injector;
+  private static Faker faker;
+  private static ProductDao productDao;
+  private static TransportClient esClient;
+  private static Injector injector;
+
+  @ClassRule
+  public static final GenericContainer esContainer =
+      new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
+          .withExposedPorts(9200, 9300);
+
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+    faker = new Faker();
+    String ip = esContainer.getContainerIpAddress();
+    Integer transportPort = esContainer.getMappedPort(9300);
+    MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_HOST, ip);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_PORT, transportPort);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_NAME, "elasticsearch");
+    injector = Guice.createInjector(
+        Modules.override(new ElasticSearchModule())
+            .with(binder -> {
+              binder.bind(Configuration.class).toProvider(() -> memoryParams);
+            })
+    );
+    productDao = injector.getInstance(ProductDao.class);
+    esClient = injector.getInstance(TransportClient.class);
+  }
 
   @Before
   public void setUp() throws Exception {
-    faker = new Faker();
-    injector = Guice.createInjector();
-    productDao = injector.getInstance(ProductDao.class);
+    productDao.initIndexIfNotExists();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    ClusterStatsResponse clusterStatsResponse = esClient.admin().cluster().prepareClusterStats().get();
+    //be sure it's for unit test clean up
+    if (clusterStatsResponse.getClusterName().value().equals("elasticsearch")
+        && clusterStatsResponse.getNodes().size() == 1) {
+      esClient.admin().indices().delete(new DeleteIndexRequest(INDEX)).actionGet();
+    }
+  }
+
+  @Test
+  public void initIndexIfNotExists() throws Exception {
+    final IndicesExistsResponse existsResponse = esClient.admin().indices().prepareExists(INDEX).get();
+    assertThat(existsResponse.isExists()).isTrue();
   }
 
   @Test
@@ -33,5 +96,12 @@ public class ProductDaoTest {
         .setProductStatus(ProductStatus.InStock)
         .build();
     productDao.upsertProduct(product);
+    esClient.admin().indices().flush(Requests.flushRequest(INDEX)).actionGet();
+
+    GetResponse getResponse = esClient.prepareGet(INDEX, TYPE, String.valueOf(product.getProductId())).get();
+    JsonFormat.Parser jsonParser = injector.getInstance(JsonFormat.Parser.class);
+    Product.Builder builder = Product.newBuilder();
+    jsonParser.merge(getResponse.getSourceAsString(), builder);
+    assertThat(builder.build()).isEqualTo(product);
   }
 }
