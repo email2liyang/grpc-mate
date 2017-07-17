@@ -32,6 +32,10 @@ the project will demostrate an online store search service including
 * Search products from elasticsearch (simple RPC)
 * Calculate products score (bi-directional streaming)
 ### Grpc best practice
+* elastic search communicate
+  * use JsonFormat.Printer to convert proto buffer message into json
+  * use JsonFormat.Parser to parse json into proto buffer 
+
 #### Client streaming
 * use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
 ```java
