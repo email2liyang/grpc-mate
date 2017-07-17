@@ -1,0 +1,27 @@
+{
+  "Product": {
+    "properties": {
+      "productId": {
+        "index": true,
+        "type": "long",
+        "coerce": true
+      },
+      "productName": {
+        "index": true,
+        "type": "text"
+      },
+      "productPrice": {
+        "index": true,
+        "type": "double"
+      },
+      "productStatus": {
+        "index": true,
+        "type": "keyword"
+      },
+      "category": {
+        "index": true,
+        "type": "keyword"
+      }
+    }
+  }
+}
