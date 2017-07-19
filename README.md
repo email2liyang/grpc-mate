@@ -88,6 +88,20 @@ subprojects {
     }
 }
 ```
+* show error log in console make it easier to debug build failure in travis-ci
+```groovy
+test {
+    testLogging {
+        // set options for log level LIFECYCLE
+        events "failed"
+        exceptionFormat "full"
+
+        // remove standard output/error logging from --info builds
+        // by assigning only 'failed' and 'skipped' events
+        info.events = ["failed", "skipped"]
+    }
+}
+```
 ### Mockito best practice
 * use Mockito to mock dao method in service test, so that we do not launch docker container to provide ES env
 * use Guice to inject any mocked instance into the dependency graph in unit test
