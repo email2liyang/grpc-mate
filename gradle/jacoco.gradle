@@ -25,7 +25,8 @@ jacocoTestCoverageVerification {
         rule {
             element = 'PACKAGE'
             excludes = ['com.google.*',
-            'io.datanerd.generated*']
+                        'io.datanerd.generated*',
+                        'io.datanerd.es.dao*']
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'

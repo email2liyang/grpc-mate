@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -35,6 +36,7 @@ import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_NAME;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class ProductDaoTest {
 
   private static Faker faker;
