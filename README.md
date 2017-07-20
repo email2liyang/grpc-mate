@@ -36,6 +36,7 @@ the project will demostrate an online store search service including
   * use JsonFormat.Printer to convert proto buffer message into json
   * use JsonFormat.Parser to parse json into proto buffer 
 #### Simple RPC
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L23)
 * we could use JsonFormat.Parser to convert es document into protobuf message
 ```java
       Product.Builder builder = Product.newBuilder();
@@ -45,6 +46,7 @@ the project will demostrate an online store search service including
 #### Server streaming
 TODO
 #### Client streaming
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductUpdateService.java#L29)
 * use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
 ```java
 PublishSubject<Product> publishSubject = PublishSubject.create();
