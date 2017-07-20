@@ -11,5 +11,3 @@ cache:
     - $HOME/.gradle/wrapper/
 jdk:
   - oraclejdk8
-after_success:
-  - ./gradlew jacocoTestReport coveralls
