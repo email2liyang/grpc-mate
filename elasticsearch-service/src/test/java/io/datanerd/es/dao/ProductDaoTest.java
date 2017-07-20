@@ -19,7 +19,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import io.datanerd.es.guice.ElasticSearchModule;
 import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
+import io.datanerd.generated.es.SearchProductsRequest;
+import io.datanerd.generated.es.SearchProductsResponse;
 
 import static io.datanerd.es.dao.ProductDao.INDEX;
 import static io.datanerd.es.dao.ProductDao.TYPE;
@@ -36,7 +37,7 @@ import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_NAME;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
+//@Ignore
 public class ProductDaoTest {
 
   private static Faker faker;
@@ -105,5 +106,35 @@ public class ProductDaoTest {
     Product.Builder builder = Product.newBuilder();
     jsonParser.merge(getResponse.getSourceAsString(), builder);
     assertThat(builder.build()).isEqualTo(product);
+  }
+
+  @Test
+  public void searchProducts() throws Exception {
+    Product product1 = Product.newBuilder()
+        .setProductId(faker.number().randomNumber())
+        .setProductName("apple guice")
+        .setProductPrice(faker.number().randomDouble(2, 10, 100))
+        .setProductStatus(ProductStatus.InStock)
+        .build();
+    Product product2 = Product.newBuilder()
+        .setProductId(faker.number().randomNumber())
+        .setProductName("cheese cake")
+        .setProductPrice(faker.number().randomDouble(2, 10, 100))
+        .setProductStatus(ProductStatus.InStock)
+        .build();
+
+    productDao.upsertProduct(product1);
+    productDao.upsertProduct(product2);
+    esClient.admin().indices().flush(Requests.flushRequest(INDEX)).actionGet();
+
+    SearchProductsResponse response = productDao.searchProducts(
+        SearchProductsRequest
+            .newBuilder()
+            .setKeyWord("apple")
+            .setLimit(5)
+            .build()
+    );
+
+    assertThat(response.getProductsList()).containsOnly(product1);
   }
 }

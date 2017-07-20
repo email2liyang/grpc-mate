@@ -21,11 +21,11 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
 
   @Override
   public void searchProducts(SearchProductsRequest request, StreamObserver<SearchProductsResponse> responseObserver) {
-    try{
+    try {
       responseObserver.onNext(productDao.searchProducts(request));
       responseObserver.onCompleted();
-    }catch (Exception e){
-      log.error(" error on search product with request - {}",request,e);
+    } catch (Exception e) {
+      log.error(" error on search product with request - {}", request, e);
       responseObserver.onError(e);
     }
   }
