@@ -3,6 +3,7 @@ gRPC-Mate - An enterprise ready micro service project base on [gRPC-Java](https:
 gRPC-Mate demostrate best practice for gRPC based micro service.
 
 [![Build Status](https://travis-ci.org/email2liyang/grpc-mate.svg?branch=master)](https://travis-ci.org/email2liyang/grpc-mate)
+[![Coverage Status](https://coveralls.io/repos/github/email2liyang/grpc-mate/badge.svg?branch=master)](https://coveralls.io/github/email2liyang/grpc-mate?branch=master)
 
 * [Grpc best practice](#grpc-best-practice)
   * [Simple RPC](#simple-rpc)
