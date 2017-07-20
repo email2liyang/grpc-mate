@@ -7,7 +7,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 
 * [Grpc best practice](#grpc-best-practice)
   * [Simple RPC](#simple-rpc)
-  * Server streaming
+  * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * Bi-directional streaming
   * Authentication
@@ -42,6 +42,8 @@ the project will demostrate an online store search service including
       jsonParser.merge(hit.getSourceAsString(), builder);
       responseBuilder.addProducts(builder.build());
 ```
+#### Server streaming
+TODO
 #### Client streaming
 * use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
 ```java
