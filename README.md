@@ -6,7 +6,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 [![Coverage Status](https://coveralls.io/repos/github/email2liyang/grpc-mate/badge.svg?branch=master)](https://coveralls.io/github/email2liyang/grpc-mate?branch=master)
 
 * [Grpc best practice](#grpc-best-practice)
-  * Simple RPC
+  * [Simple RPC](#simple-rpc)
   * Server streaming
   * [Client streaming](#client-streaming)
   * Bi-directional streaming
@@ -35,7 +35,13 @@ the project will demostrate an online store search service including
 * elastic search communicate
   * use JsonFormat.Printer to convert proto buffer message into json
   * use JsonFormat.Parser to parse json into proto buffer 
-
+#### Simple RPC
+* we could use JsonFormat.Parser to convert es document into protobuf message
+```java
+      Product.Builder builder = Product.newBuilder();
+      jsonParser.merge(hit.getSourceAsString(), builder);
+      responseBuilder.addProducts(builder.build());
+```
 #### Client streaming
 * use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
 ```java
