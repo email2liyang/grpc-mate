@@ -10,7 +10,6 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * Bi-directional streaming
-  * Authentication
 * Promethues integration
 * Kubernetes Deployment
 * [Gradle multiple builds best practice](#gradle-best-practice)
@@ -44,7 +43,17 @@ the project will demostrate an online store search service including
       responseBuilder.addProducts(builder.build());
 ```
 #### Server streaming
-TODO
+* with server streaming , user could pass PublishSubject to dao layer to connect the real data with ResponseObserver
+```java
+PublishSubject<Product> productPublishSubject = PublishSubject.create();
+    Disposable disposable = productPublishSubject
+        .doOnNext(product -> responseObserver.onNext(product))
+        .doOnComplete(() -> responseObserver.onCompleted())
+        .doOnError(t -> responseObserver.onError(t))
+        .subscribe();
+    productDao.downloadProducts(request, productPublishSubject);
+    disposable.dispose();
+``` 
 #### Client streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductUpdateService.java#L29)
 * use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
