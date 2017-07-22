@@ -7,10 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.datanerd.es.dao.ProductDao;
+import io.datanerd.generated.common.Product;
+import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.ProductReadServiceGrpc;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
 import io.grpc.stub.StreamObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 @Singleton
 public class ProductReadService extends ProductReadServiceGrpc.ProductReadServiceImplBase {
@@ -28,5 +32,17 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
       log.error(" error on search product with request - {}", request, e);
       responseObserver.onError(e);
     }
+  }
+
+  @Override
+  public void downloadProducts(DownloadProductsRequest request, StreamObserver<Product> responseObserver) {
+    PublishSubject<Product> productPublishSubject = PublishSubject.create();
+    Disposable disposable = productPublishSubject
+        .doOnNext(product -> responseObserver.onNext(product))
+        .doOnComplete(() -> responseObserver.onCompleted())
+        .doOnError(t -> responseObserver.onError(t))
+        .subscribe();
+    productDao.downloadProducts(request, productPublishSubject);
+    disposable.dispose();
   }
 }
