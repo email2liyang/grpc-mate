@@ -53,6 +53,7 @@ public class TransportClientProvider implements Provider<TransportClient> {
     return Settings.builder()
         .put("client.transport.ping_timeout", "60s")
         .put("client.transport.nodes_sampler_interval", "120s")
+        .put("client.transport.sniff", false)
         .put("cluster.name",
              configuration.getString(CONFIG_ES_CLUSTER_NAME, "elasticsearch"))
         .build();
