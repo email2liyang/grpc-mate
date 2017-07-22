@@ -1,8 +1,10 @@
 package io.datanerd.es.dao;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.util.Modules;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 
 import com.github.javafaker.Faker;
@@ -19,17 +21,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.datanerd.es.guice.ElasticSearchModule;
 import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
+import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 import static io.datanerd.es.TestConstant.ES_TEST_IMAGE;
 import static io.datanerd.es.dao.ProductDao.INDEX;
@@ -38,9 +47,11 @@ import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_HOST;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_NAME;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
 import static org.assertj.core.api.Assertions.assertThat;
-@Ignore
+import static org.assertj.core.api.Fail.fail;
+
 public class ProductDaoTest {
 
+  private static Logger log = LoggerFactory.getLogger(ProductDaoTest.class); //NOPMD
   private static Faker faker;
   private static ProductDao productDao;
   private static TransportClient esClient;
@@ -49,8 +60,8 @@ public class ProductDaoTest {
   @ClassRule
   public static final GenericContainer esContainer =
       new GenericContainer(ES_TEST_IMAGE)
-          .withEnv("transport.host","0.0.0.0")
-          .withEnv("discovery.zen.minimum_master_nodes","1")
+          .withEnv("transport.host", "0.0.0.0")
+          .withEnv("discovery.zen.minimum_master_nodes", "1")
           .withExposedPorts(9200, 9300);
 
   @BeforeClass
@@ -139,5 +150,49 @@ public class ProductDaoTest {
     );
 
     assertThat(response.getProductsList()).containsOnly(product1);
+  }
+
+  @Test
+  public void downloadProducts() throws Exception {
+    String category = faker.numerify("category-##");
+    //insert sample data into es
+    List<Product> sampleProducts = IntStream.range(1, 5).mapToObj(index -> {
+      Product product = createProduct(category);
+      try {
+        productDao.upsertProduct(product);
+      } catch (InvalidProtocolBufferException e) {
+        log.error(" error on creating sample product for test downloadProducts", e);
+      }
+      return product;
+    }).collect(Collectors.toList());
+
+    esClient.admin().indices().flush(Requests.flushRequest(INDEX)).actionGet();
+    PublishSubject<Product> productPublishSubject = PublishSubject.create();
+    List<Product> downloadedProducts = Lists.newArrayList();
+    Disposable disposable = productPublishSubject
+        .doOnNext(product -> downloadedProducts.add(product))
+        .doOnError(t -> fail("should not failed", t))
+        .doOnComplete(() -> {
+          Product[] downloadedProductArray = sampleProducts.toArray(new Product[]{});
+          assertThat(downloadedProducts).containsOnly(downloadedProductArray);
+        })
+        .subscribe();
+    productDao.downloadProducts(
+        DownloadProductsRequest.newBuilder()
+            .setCategory(category)
+            .build(),
+        productPublishSubject
+    );
+    disposable.dispose();
+  }
+
+  private Product createProduct(String category) {
+    return Product.newBuilder()
+        .setProductId(faker.number().randomNumber())
+        .setProductName(faker.name().name())
+        .setProductPrice(faker.number().randomDouble(2, 10, 100))
+        .setCategory(category)
+        .setProductStatus(ProductStatus.InStock)
+        .build();
   }
 }

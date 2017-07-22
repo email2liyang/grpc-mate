@@ -11,6 +11,7 @@ import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRespon
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -22,8 +23,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.datanerd.generated.common.Product;
+import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
+import io.reactivex.subjects.PublishSubject;
 
 @Singleton
 public class ProductDao {
@@ -31,6 +34,8 @@ public class ProductDao {
   private static Logger log = LoggerFactory.getLogger(ProductDao.class); //NOPMD
   public static final String INDEX = "products";
   public static final String TYPE = "Product";
+  public static final TimeValue DEFAULT_SCROLL_TIME_VALUE = new TimeValue(60000);
+  static final int SCROLL_SIZE = 50;
 
   @Inject
   private TransportClient esClient;
@@ -112,5 +117,47 @@ public class ProductDao {
       responseBuilder.addProducts(builder.build());
     }
     return responseBuilder.build();
+  }
+
+  /**
+   * Download product from given category.
+   *
+   * @param request               which contains query category
+   * @param productPublishSubject the subject which downloaded product should publish to
+   */
+  public void downloadProducts(DownloadProductsRequest request, PublishSubject<Product> productPublishSubject) {
+
+    QueryBuilder queryBuilder = QueryBuilders.termQuery("category", request.getCategory());
+    SearchResponse scrollResponse =
+        esClient
+            .prepareSearch(INDEX)
+            .setScroll(DEFAULT_SCROLL_TIME_VALUE)
+            .setTypes(TYPE)
+            .setQuery(queryBuilder)
+            .setSize(SCROLL_SIZE)
+            .get();
+    do {
+      scrollResponse.getHits().forEach(hit -> {
+        try {
+          Product.Builder builder = Product.newBuilder();
+          jsonParser.merge(hit.sourceAsString(), builder);
+          productPublishSubject.onNext(builder.build());
+        } catch (IOException ioe) {
+          // Don't fail the whole stream
+          log.error("Unable to read product record", ioe);
+          productPublishSubject.onError(ioe);
+          throw new IllegalStateException(ioe);
+        }
+      });
+      // Fetch next batch of cite group records
+      scrollResponse =
+          esClient
+              .prepareSearchScroll(scrollResponse.getScrollId())
+              .setScroll(DEFAULT_SCROLL_TIME_VALUE)
+              .execute()
+              .actionGet();
+    } while (scrollResponse.getHits().getHits().length != 0);
+
+    productPublishSubject.onComplete();
   }
 }
