@@ -30,6 +30,7 @@ import io.datanerd.generated.common.ProductStatus;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
 
+import static io.datanerd.es.TestConstant.ES_TEST_IMAGE;
 import static io.datanerd.es.dao.ProductDao.INDEX;
 import static io.datanerd.es.dao.ProductDao.TYPE;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_HOST;
@@ -46,7 +47,9 @@ public class ProductDaoTest {
 
   @ClassRule
   public static final GenericContainer esContainer =
-      new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
+      new GenericContainer(ES_TEST_IMAGE)
+          .withEnv("transport.host","0.0.0.0")
+          .withEnv("discovery.zen.minimum_master_nodes","1")
           .withExposedPorts(9200, 9300);
 
   @BeforeClass

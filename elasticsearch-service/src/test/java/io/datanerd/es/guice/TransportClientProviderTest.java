@@ -16,6 +16,7 @@ import org.testcontainers.containers.GenericContainer;
 
 import java.util.HashMap;
 
+import static io.datanerd.es.TestConstant.ES_TEST_IMAGE;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_HOST;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_NAME;
 import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
@@ -26,17 +27,17 @@ public class TransportClientProviderTest {
   private static Logger log = LoggerFactory.getLogger(TransportClientProviderTest.class); //NOPMD
   private TransportClientProvider transportClientProvider;
   @ClassRule
-  public static final GenericContainer esContainer = new GenericContainer("email2liyang/elasticsearch-unit-image:5.4.3")
-      .withExposedPorts(9200,9300);
+  public static final GenericContainer esContainer = new GenericContainer(ES_TEST_IMAGE)
+      .withExposedPorts(9200, 9300);
 
   @Before
   public void setUp() throws Exception {
     String ip = esContainer.getContainerIpAddress();
     Integer transportPort = esContainer.getMappedPort(9300);
     MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
-    memoryParams.setProperty(CONFIG_ES_CLUSTER_HOST,ip);
-    memoryParams.setProperty(CONFIG_ES_CLUSTER_PORT,transportPort);
-    memoryParams.setProperty(CONFIG_ES_CLUSTER_NAME,"elasticsearch");
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_HOST, ip);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_PORT, transportPort);
+    memoryParams.setProperty(CONFIG_ES_CLUSTER_NAME, "elasticsearch");
     Injector injector = Guice.createInjector(
         Modules.override(new ElasticSearchModule()).with(
             binder -> {
