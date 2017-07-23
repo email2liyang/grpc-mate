@@ -9,7 +9,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Simple RPC](#simple-rpc)
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
-  * Bi-directional streaming
+  * [Bi-directional streaming](#bi-directional-streaming)
 * Promethues integration
 * Kubernetes Deployment
 * [Gradle multiple builds best practice](#gradle-best-practice)
@@ -72,6 +72,8 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
         })
         .subscribe();
 ```
+#### Bi-directional streaming
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
 ### Gradle Best Practice
 * add gradle wrapper, so that it can be run anywhere
