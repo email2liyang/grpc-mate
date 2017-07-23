@@ -43,6 +43,7 @@ the project will demostrate an online store search service including
       responseBuilder.addProducts(builder.build());
 ```
 #### Server streaming
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L39)
 * with server streaming , user could pass PublishSubject to dao layer to connect the real data with ResponseObserver
 ```java
 PublishSubject<Product> productPublishSubject = PublishSubject.create();
