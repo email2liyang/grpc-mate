@@ -35,6 +35,7 @@ import java.util.stream.IntStream;
 import io.datanerd.es.guice.ElasticSearchModule;
 import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
+import io.datanerd.generated.es.CalculateProductScoreResponse;
 import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
@@ -196,5 +197,20 @@ public class ProductDaoTest {
         .setCategory(category)
         .setProductStatus(ProductStatus.InStock)
         .build();
+  }
+
+  @Test
+  public void calculateProductScore() throws Exception {
+    PublishSubject<CalculateProductScoreResponse> publishSubject = PublishSubject.create();
+    List<CalculateProductScoreResponse> responses = Lists.newArrayList();
+    publishSubject
+        .doOnNext(response -> responses.add(response))
+        .subscribe();
+
+    Product product = createProduct("category");
+    productDao.calculateProductScore(product, publishSubject);
+
+    assertThat(responses.size()).isEqualTo(1);
+    publishSubject.onComplete();
   }
 }

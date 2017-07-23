@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import io.datanerd.generated.common.Product;
+import io.datanerd.generated.es.CalculateProductScoreResponse;
 import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
@@ -159,5 +160,21 @@ public class ProductDao {
     } while (scrollResponse.getHits().getHits().length != 0);
 
     productPublishSubject.onComplete();
+  }
+
+  /**
+   * Calculate product score based on product price for demo only.
+   *
+   * @param product        given product to be calculated
+   * @param downloadStream the download stream for score
+   */
+  public void calculateProductScore(Product product, PublishSubject<CalculateProductScoreResponse> downloadStream) {
+    downloadStream.onNext(
+        CalculateProductScoreResponse
+            .newBuilder()
+            .setProduct(product)
+            .setScore(new Double(product.getProductPrice()).longValue())
+            .build()
+    );
   }
 }
