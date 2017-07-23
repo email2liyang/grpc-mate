@@ -173,7 +173,7 @@ public class ProductDao {
         CalculateProductScoreResponse
             .newBuilder()
             .setProduct(product)
-            .setScore(new Double(product.getProductPrice()).longValue())
+            .setScore((long) product.getProductPrice())
             .build()
     );
   }
