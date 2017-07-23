@@ -13,7 +13,6 @@ import io.datanerd.generated.es.ProductReadServiceGrpc;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
 import io.grpc.stub.StreamObserver;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 @Singleton
@@ -37,12 +36,11 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
   @Override
   public void downloadProducts(DownloadProductsRequest request, StreamObserver<Product> responseObserver) {
     PublishSubject<Product> productPublishSubject = PublishSubject.create();
-    Disposable disposable = productPublishSubject
+    productPublishSubject
         .doOnNext(product -> responseObserver.onNext(product))
         .doOnComplete(() -> responseObserver.onCompleted())
         .doOnError(t -> responseObserver.onError(t))
         .subscribe();
     productDao.downloadProducts(request, productPublishSubject);
-    disposable.dispose();
   }
 }
