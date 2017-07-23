@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import io.datanerd.es.dao.ProductDao;
 import io.datanerd.generated.common.Product;
+import io.datanerd.generated.es.CalculateProductScoreResponse;
 import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.ProductReadServiceGrpc;
 import io.datanerd.generated.es.SearchProductsRequest;
@@ -42,5 +43,41 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
         .doOnError(t -> responseObserver.onError(t))
         .subscribe();
     productDao.downloadProducts(request, productPublishSubject);
+  }
+
+  @Override
+  public StreamObserver<Product> calculateProductScore(StreamObserver<CalculateProductScoreResponse> responseObserver) {
+    //define download stream behaviour
+    PublishSubject<CalculateProductScoreResponse> downloadStream = PublishSubject.create();
+    downloadStream
+        .doOnNext(response -> responseObserver.onNext(response))
+        .doOnError(t -> {
+          log.error("error on calculate product score response", t);
+          responseObserver.onError(t);
+        })
+        .doOnComplete(() -> {
+          log.info("calculate product score response done");
+          responseObserver.onCompleted();
+        })
+        .subscribe();
+    //define upload stream behaviour
+    PublishSubject<Product> uploadStream = PublishSubject.create();
+    uploadStream
+        .doOnNext(product -> {
+          log.debug(" calculate product score - {}", product);
+          productDao.calculateProductScore(product, downloadStream);
+        })
+        .doOnError(t -> {
+          log.info("client upload got error", t);
+          downloadStream.onError(t);
+        })
+        .doOnComplete(() -> {
+          log.info("client upload complete");
+          downloadStream.onComplete();
+        })
+        .subscribe();
+
+    return new RxStreamObserver<>(uploadStream);
+
   }
 }

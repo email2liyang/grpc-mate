@@ -11,10 +11,13 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.datanerd.es.dao.ProductDao;
 import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
+import io.datanerd.generated.es.CalculateProductScoreResponse;
 import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.ProductReadServiceGrpc;
 import io.datanerd.generated.es.SearchProductsRequest;
@@ -28,6 +31,7 @@ import io.grpc.stub.StreamObserver;
 import io.reactivex.subjects.PublishSubject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -124,5 +128,46 @@ public class ProductReadServiceTest {
     verify(productDao, times(1)).downloadProducts(any(), any());
     assertThat(downloadedProducts).containsOnly(Product.getDefaultInstance());
     assertThat(onCompletedCalled).isTrue();
+  }
+
+  @Test
+  public void calculateProductScore() throws Exception {
+    doAnswer(invocation -> {
+      PublishSubject<CalculateProductScoreResponse> downloadStream =
+          (PublishSubject<CalculateProductScoreResponse>)invocation.getArguments()[1];
+
+      downloadStream.onNext(CalculateProductScoreResponse.getDefaultInstance());
+      return null;
+    }).when(productDao).calculateProductScore(any(),any());
+    List<CalculateProductScoreResponse> responses = Lists.newArrayList();
+    AtomicBoolean onErrorCalled = new AtomicBoolean(false);
+    AtomicBoolean onCompleted = new AtomicBoolean(false);
+    StreamObserver<Product> uploadStream = productReadService.calculateProductScore(new StreamObserver<CalculateProductScoreResponse>() {
+      @Override
+      public void onNext(CalculateProductScoreResponse value) {
+        responses.add(value);
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        onErrorCalled.compareAndSet(false,true);
+      }
+
+      @Override
+      public void onCompleted() {
+        onCompleted.compareAndSet(false,true);
+      }
+    });
+
+    List<Product> products = IntStream.range(1,5)
+        .mapToObj(index->Product.getDefaultInstance())
+        .collect(Collectors.toList());
+
+    products.forEach(product -> uploadStream.onNext(product));
+    uploadStream.onCompleted();
+
+    assertThat(responses.size()).isEqualTo(4);
+    assertThat(onCompleted).isTrue();
+    assertThat(onErrorCalled).isFalse();
   }
 }
