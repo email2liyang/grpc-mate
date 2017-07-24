@@ -13,7 +13,12 @@ subprojects {
     }
 }
 
-
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.1'
 }

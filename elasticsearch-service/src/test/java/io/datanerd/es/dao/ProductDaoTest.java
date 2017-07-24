@@ -51,7 +51,6 @@ import static io.datanerd.es.guice.Constants.CONFIG_ES_CLUSTER_PORT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 
-@Ignore
 public class ProductDaoTest {
 
   private static Logger log = LoggerFactory.getLogger(ProductDaoTest.class); //NOPMD
