@@ -15,11 +15,14 @@ plugins {
 
 apply plugin: 'idea'
 apply plugin: 'com.google.protobuf'
+apply plugin: 'application'
+apply plugin: 'distribution'
 
 repositories {
     mavenCentral()
 }
 
+mainClassName = "io.datanerd.es.server.ServiceLauncher"
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.2.0"
