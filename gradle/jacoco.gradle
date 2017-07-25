@@ -15,7 +15,8 @@ jacocoTestReport {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it,
                      exclude: ['**/generated/**',
-                               'com/google/**'])
+                               'com/google/**',
+                               'io/datanerd/es/server/**',])
         })
     }
 }
