@@ -12,6 +12,9 @@ public class ServiceLauncher {
 
   private static final Logger log = LoggerFactory.getLogger(ServiceLauncher.class);
 
+  /**
+   * Start the micro service.
+   */
   public static void main(final String[] args) {
     try {
       final Injector injector =
