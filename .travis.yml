@@ -4,7 +4,7 @@ services:
   - docker
 before_install: make pull_image
 script:
-  - ./gradlew clean build
+  - make build
 cache:
   directories:
     - $HOME/.gradle/caches/
