@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: elasticsearch-service
+spec:
+  revisionHistoryLimit: 4
+  replicas: 2
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
+        prometheus.io/path: '/metrics'
+      labels:
+        app: elasticsearch-service
+    spec:
+      containers:
+      - name: elasticsearch-service
+        image: email2liyang/elasticsearch-service:1.0.0
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+            httpHeaders:
+              - name: X-gRPC-Status
+                value: OK
+          initialDelaySeconds: 8
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+            httpHeaders:
+              - name: X-gRPC-Status
+                value: OK
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: "1280Mi"
+        ports:
+        - name: grpc
+          containerPort: 8080
+        - name: http
+          containerPort: 9090
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: cluster-config
+          items:
+          - key: data_nerd.properties
+            path: data_nerd.properties
