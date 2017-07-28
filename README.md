@@ -11,7 +11,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Client streaming](#client-streaming)
   * [Bi-directional streaming](#bi-directional-streaming)
 * Promethues integration
-* Kubernetes Deployment
+* [Kubernetes Deployment](#kubernetes-deployment)
 * [Gradle multiple builds best practice](#gradle-best-practice)
 * [Mockito best practice](#mockito-best-practice)
 * [Junit best practice](#junit-best-practice)
@@ -75,6 +75,24 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 #### Bi-directional streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
+### Kubernetes Deployment
+* [sample](https://github.com/email2liyang/grpc-mate/tree/master/elasticsearch-service/deployment)
+* use property file to manage system property and add the system property to configmap, so it's easy to debug program locally by specify the property file from system env.
+```
+kubectl create configmap cluster-config --from-file=data_nerd.properties --namespace=prod
+```
+* mount property from configmap in deploymnet yaml file
+```
+volumes:
+      - name: config-volume
+        configMap:
+          name: cluster-config
+          items:
+          - key: data_nerd.properties
+            path: data_nerd.properties
+```
+* service will seldom get redeployed after first deployment
+
 ### Gradle Best Practice
 * add gradle wrapper, so that it can be run anywhere
 
