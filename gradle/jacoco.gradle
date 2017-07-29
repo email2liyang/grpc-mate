@@ -16,7 +16,8 @@ jacocoTestReport {
             fileTree(dir: it,
                      exclude: ['**/generated/**',
                                'com/google/**',
-                               'io/datanerd/es/server/**',])
+                               'io/datanerd/es/server/**',
+                               'io/datanerd/es/metrics/AutoValue**'])
         })
     }
 }
@@ -28,11 +29,21 @@ jacocoTestCoverageVerification {
             excludes = ['com.google.*',
                         'io.datanerd.generated*',
                         'io.datanerd.es.dao*',
-                        'io.datanerd.es.server*',]
+                        'io.datanerd.es.server*',
+                        'io.datanerd.es.metrics*']
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
                 minimum = 0.80
+            }
+        }
+        rule {
+            element = 'PACKAGE'
+            includes = ['io.datanerd.es.metrics*']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
             }
         }
     }

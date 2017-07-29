@@ -1,23 +1,27 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         // ASSUMES GRADLE 2.12 OR HIGHER. Use plugin version 0.7.5 with earlier
         // gradle versions
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.10"
     }
 }
 
 plugins {
     id 'com.github.kt3k.coveralls' version '2.8.1'
-    id "net.ltgt.apt" version "0.10"
 }
 
 apply plugin: 'idea'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'application'
 apply plugin: 'distribution'
+apply plugin: "net.ltgt.apt"
 
 repositories {
     mavenCentral()
@@ -86,8 +90,8 @@ dependencies {
     compile 'io.prometheus:simpleclient_common:0.0.23'
 
     //auto value
-    compileOnly "com.google.auto.value:auto-value:1.2"
-    apt "com.google.auto.value:auto-value:1.2"
+    compile "com.google.auto.value:auto-value:1.4.1"
+    apt "com.google.auto.value:auto-value:1.4.1"
 
     // test dependencies
     testCompile 'junit:junit:4.12'
