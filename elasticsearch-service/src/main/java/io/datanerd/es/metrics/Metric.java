@@ -3,7 +3,7 @@ package io.datanerd.es.metrics;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-abstract class Metric {
+public abstract class Metric {
 
   abstract Class service();
 
