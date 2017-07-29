@@ -85,6 +85,10 @@ dependencies {
     compile 'io.prometheus:simpleclient:0.0.23'
     compile 'io.prometheus:simpleclient_common:0.0.23'
 
+    //auto value
+    compileOnly "com.google.auto.value:auto-value:1.2"
+    apt "com.google.auto.value:auto-value:1.2"
+
     // test dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'com.github.javafaker:javafaker:0.13'
