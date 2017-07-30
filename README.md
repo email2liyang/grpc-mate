@@ -79,7 +79,7 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 * use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
 * use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
 * use CounterFactory to create counter and use the counter to record service metrics see [ProductReadService.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java)
-
+* use [NanoHttpD](https://github.com/NanoHttpd/nanohttpd) based [HttpServer.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/server/HttpServer.java) to serve metrics and grpc health info
 ### Kubernetes Deployment
 * [sample](https://github.com/email2liyang/grpc-mate/tree/master/elasticsearch-service/deployment)
 * use property file to manage system property and add the system property to configmap, so it's easy to debug program locally by specify the property file from system env.
