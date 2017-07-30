@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MetricTest {
 
@@ -35,5 +36,24 @@ public class MetricTest {
   public void labels() throws Exception {
     assertThat(metric.labels()).isNotEmpty();
     assertThat(metric.labels().get()).contains("labela", "labelb");
+  }
+
+  @Test
+  public void optional_field() throws Exception {
+    metric = Metric
+        .builder()
+        .setService(MetricTest.class)
+        .setAction("test")
+        .build();
+    assertThat(metric.labels()).isEmpty();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void mandatory_field() throws Exception {
+    metric = Metric
+        .builder()
+        .setService(MetricTest.class)
+        .build();
+    fail("should failed as mandatory field is missing");
   }
 }
