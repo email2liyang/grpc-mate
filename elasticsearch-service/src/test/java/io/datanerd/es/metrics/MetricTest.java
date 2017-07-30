@@ -1,5 +1,7 @@
 package io.datanerd.es.metrics;
 
+import com.google.common.collect.ImmutableList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +17,7 @@ public class MetricTest {
         .builder()
         .setService(MetricTest.class)
         .setAction("test")
+        .setLabels(ImmutableList.of("labela", "labelb"))
         .build();
   }
 
@@ -26,5 +29,11 @@ public class MetricTest {
   @Test
   public void action() throws Exception {
     assertThat(metric.action()).isEqualTo("test");
+  }
+
+  @Test
+  public void labels() throws Exception {
+    assertThat(metric.labels()).isNotEmpty();
+    assertThat(metric.labels().get()).contains("labela", "labelb");
   }
 }
