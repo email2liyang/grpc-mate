@@ -29,6 +29,9 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
 
   private final Counter counter;
 
+  /**
+   * Constructor invoked by Guice.
+   */
   @Inject
   public ProductReadService() {
     counter = CounterFactory.create(

@@ -29,7 +29,7 @@ public class MetricTest {
 
   @Test
   public void action() throws Exception {
-    assertThat(metric.action()).isEqualTo("test");
+    assertThat(metric.action().get()).isEqualTo("test");
   }
 
   @Test
