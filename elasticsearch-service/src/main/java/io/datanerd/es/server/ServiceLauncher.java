@@ -19,6 +19,11 @@ public class ServiceLauncher {
     try {
       final Injector injector =
           Guice.createInjector(new ElasticSearchModule());
+      //start http server in daemon mode
+      injector
+          .getInstance(HttpServer.class)
+          .start();
+      //start grpc server
       injector
           .getInstance(GrpcServer.class)
           .start()
