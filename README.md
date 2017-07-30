@@ -10,7 +10,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * [Bi-directional streaming](#bi-directional-streaming)
-* Promethues integration
+* [Promethues integration](#promethues-integration)
 * [Kubernetes Deployment](#kubernetes-deployment)
 * [Gradle multiple builds best practice](#gradle-best-practice)
 * [Mockito best practice](#mockito-best-practice)
@@ -75,6 +75,11 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 #### Bi-directional streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
+### Promethues integration
+* use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
+* use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
+* use CounterFactory to create counter and use the counter to record service metrics see [ProductReadService.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java)
+
 ### Kubernetes Deployment
 * [sample](https://github.com/email2liyang/grpc-mate/tree/master/elasticsearch-service/deployment)
 * use property file to manage system property and add the system property to configmap, so it's easy to debug program locally by specify the property file from system env.
