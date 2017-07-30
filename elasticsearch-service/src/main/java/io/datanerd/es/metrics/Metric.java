@@ -5,7 +5,6 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 import java.util.Optional;
 
-
 @AutoValue
 public abstract class Metric {
 
