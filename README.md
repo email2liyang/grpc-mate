@@ -24,7 +24,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Jacoco](#jacoco)
 
 ### Demo  Script
-the project will demostrate an online store search service including
+the project will demonstrate an online store search service including
 
 * Create elasticsearch index with alias
 * Uploading products into Elasticsearch (client streaming)
