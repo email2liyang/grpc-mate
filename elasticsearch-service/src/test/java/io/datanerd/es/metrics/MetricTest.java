@@ -52,7 +52,6 @@ public class MetricTest {
   public void mandatory_field() throws Exception {
     metric = Metric
         .builder()
-        .setService(MetricTest.class)
         .build();
     fail("should failed as mandatory field is missing");
   }
