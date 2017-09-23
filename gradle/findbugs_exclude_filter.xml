@@ -5,4 +5,7 @@
     <Match>
         <Package name="~io\.datanerd\.generated\.es\.*"/>
     </Match>
+    <Match>
+        <Package name="~com\.google\.api\.*"/>
+    </Match>
 </FindBugsFilter>
