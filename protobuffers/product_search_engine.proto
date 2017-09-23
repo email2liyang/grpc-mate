@@ -2,6 +2,7 @@ syntax = "proto3";
 option java_package = "io.datanerd.generated.es";
 option java_multiple_files = true;
 import "product_common.proto";
+import "google/api/annotations.proto";
 
 service ProductUpdateService {
     //upload product into elastic search , make it so that we could search on it
@@ -29,7 +30,10 @@ service ProductReadService {
     //search product and return all matched products
     //used to demo simple grpc call
     rpc SearchProducts (SearchProductsRequest) returns (SearchProductsResponse){
-
+        option (google.api.http) = {
+          post: "/grpc/api/v1/product/search"
+          body: "*"
+        };
     }
 
     //calcualte each proeuct sore based on simple rule
