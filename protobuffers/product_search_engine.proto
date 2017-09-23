@@ -3,6 +3,8 @@ option java_package = "io.datanerd.generated.es";
 option java_multiple_files = true;
 import "product_common.proto";
 import "google/api/annotations.proto";
+//make sure this can be used in grpc gateway
+option go_package = "datanerd";
 
 service ProductUpdateService {
     //upload product into elastic search , make it so that we could search on it

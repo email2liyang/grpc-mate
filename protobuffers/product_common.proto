@@ -1,6 +1,7 @@
 syntax = "proto3";
 option java_package = "io.datanerd.generated.common";
 option java_multiple_files = true;
+option go_package = "datanerd";
 
 message Product {
     int64 product_id = 1;
