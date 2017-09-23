@@ -11,6 +11,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * [Bi-directional streaming](#bi-directional-streaming)
+  * [Restful endpoint](#restful-endpoint)
 * [Promethues integration](#promethues-integration)
 * [Kubernetes Deployment](#kubernetes-deployment)
 * [Gradle multiple builds best practice](#gradle-best-practice)
@@ -76,6 +77,30 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 #### Bi-directional streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
+#### Restful endpoint
+* use [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) to bridge grpc service to restful endpoint
+* stream is not supported in http 1.1
+* define a sample grpc service like below
+```
+service EchoService {
+    rpc Echo (EchoRequest) returns (EchoResponse) {
+        option (google.api.http) = {
+          post: "/grpc/api/v1/echo"
+          body: "*"
+        };
+    }
+}
+
+message EchoRequest {
+    string ping = 1;
+}
+
+message EchoResponse {
+    string pong = 2;
+}
+```
+* use grpc-gateway to generate an reverse proxy.
+* start grpc-gateway server see details from https://github.com/email2liyang/grpc-mate/tree/master/grpc-gateway 
 ### Promethues integration
 * use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
 * use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
