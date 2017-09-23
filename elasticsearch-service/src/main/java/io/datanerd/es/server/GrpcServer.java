@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import io.datanerd.es.service.EchoService;
 import io.datanerd.es.service.ProductReadService;
 import io.datanerd.es.service.ProductUpdateService;
 import io.grpc.Server;
@@ -21,6 +22,8 @@ class GrpcServer {
   private ProductReadService productReadService;
   @Inject
   private ProductUpdateService productUpdateService;
+  @Inject
+  private EchoService echoService;
 
   /**
    * Start Netty Grpc Server.
@@ -37,6 +40,7 @@ class GrpcServer {
             .forPort(port)
             .addService(productReadService)
             .addService(productUpdateService)
+            .addService(echoService)
             .build();
 
     server.start();

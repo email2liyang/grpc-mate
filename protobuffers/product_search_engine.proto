@@ -60,7 +60,7 @@ message CalculateProductScoreResponse {
 }
 
 service EchoService {
-    rpc Echo (EchoRequest) returns (EchoRespose) {
+    rpc Echo (EchoRequest) returns (EchoResponse) {
         option (google.api.http) = {
           post: "/grpc/api/v1/echo"
           body: "*"
@@ -72,6 +72,6 @@ message EchoRequest {
     string ping = 1;
 }
 
-message EchoRespose {
-    string pont = 2;
+message EchoResponse {
+    string pong = 2;
 }
