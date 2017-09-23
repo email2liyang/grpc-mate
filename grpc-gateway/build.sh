@@ -2,38 +2,40 @@
 
 #set build dir
 #rm -fr build
-#mkdir -p build
+mkdir -p build
 pushd build
 #set go path to current dir
 GOPATH=$(pwd)
 echo "GOPATH=$GOPATH"
 # get go dependencies
-#go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-#go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-#go get -u github.com/golang/protobuf/protoc-gen-go
+if [ ! -d src ]; then
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+    go get -u github.com/golang/protobuf/protoc-gen-go
+fi
 
-cp -fr ../src/grpc-gateway src
-mkdir -p src/grpc-gateway/proto
-cp -fr ../../protobuffers/google  src/grpc-gateway/proto/
-cp -fr ../../protobuffers/*.proto  src/grpc-gateway/proto/
-mkdir -p src/grpc-gateway/datanerd
+cp -fr ../src/grpc-mate-gateway src
+mkdir -p src/grpc-mate-gateway/proto
+cp -fr ../../protobuffers/google  src/grpc-mate-gateway/proto/
+cp -fr ../../protobuffers/*.proto  src/grpc-mate-gateway/proto/
+mkdir -p src/grpc-mate-gateway/datanerd
 #generate grpc stub
-protoc -Igrpc-gateway/proto \
+protoc -Isrc/grpc-mate-gateway/proto \
     -I$GOPATH/src \
     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-    --go_out=src/grpc-gateway/datanerd \
-    grpc-gateway/proto/*.proto
+    --go_out=plugins=grpc:src/grpc-mate-gateway/datanerd \
+    src/grpc-mate-gateway/proto/*.proto
 #generate reversed proxy
-protoc -Igrpc-gateway/proto \
+protoc -Isrc/grpc-mate-gateway/proto \
     -I$GOPATH/src \
     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-    --grpc-gateway_out=logtostderr=true:src/grpc-gateway/datanerd \
-    grpc-gateway/proto/*.proto
+    --grpc-gateway_out=logtostderr=true:src/grpc-mate-gateway/datanerd \
+    src/grpc-mate-gateway/proto/*.proto
 
 #build ghe grpc-gateway
-pushd src/grpc-gateway
+pushd src/grpc-mate-gateway
 go get -d -v
-#go install -v
+go install -v
 popd
 
 popd

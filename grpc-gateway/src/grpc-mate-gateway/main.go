@@ -9,11 +9,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 
-	productSearchGrpc "grpc-gateway/datanerd"
+	echoGrpc "grpc-mate-gateway/datanerd"
+	"fmt"
 )
 
 var (
-	echoEndpoint = flag.String("product_search_endpoint", "localhost:8080", "endpoint of Product Search")
+	echoEndpoint = flag.String("echo_endpoint", "localhost:8080", "endpoint of echo Search")
 )
 
 func run() error {
@@ -23,19 +24,21 @@ func run() error {
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := productSearchGrpc.RegisterProductReadServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+	err := echoGrpc.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
 	if err != nil {
 		return err
 	}
 
-	return http.ListenAndServe(":9090", mux)
+	return http.ListenAndServe(":7070", mux)
 }
 
 func main() {
+	fmt.Println("grpc gateway started")
 	flag.Parse()
 	defer glog.Flush()
 
 	if err := run(); err != nil {
 		glog.Fatal(err)
 	}
+
 }
