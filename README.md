@@ -11,6 +11,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * [Bi-directional streaming](#bi-directional-streaming)
+  * [Transfer Large File](#transfer-large-file)
   * [Restful endpoint](#restful-endpoint)
 * [Promethues integration](#promethues-integration)
 * [Kubernetes Deployment](#kubernetes-deployment)
@@ -77,6 +78,18 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 #### Bi-directional streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
+#### Transfer Large File
+* grpc is not designed to transfer large files, but we could leverage stream api to transfer any size of data in binary stream
+* see protobuf definition below we could use stream api to transfer any size of data in any format
+```proto
+message DataChunk {
+    bytes data = 1;
+}
+rpc DownloadProductImage(DownloadProductImageRequest) returns(stream DataChunk){
+}
+```
+* [Server Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
+* [Client Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
 #### Restful endpoint
 * use [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) to bridge grpc service to restful endpoint
 * stream is not supported in http 1.1
