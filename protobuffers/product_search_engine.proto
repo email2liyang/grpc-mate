@@ -39,7 +39,7 @@ service ProductReadService {
     rpc CalculateProductScore (stream Product) returns (stream CalculateProductScoreResponse) {
     }
 
-    rpc DownloadProductImage(DownloadProductImageRequest) returns(stream FileChunk){
+    rpc DownloadProductImage(DownloadProductImageRequest) returns(stream DataChunk){
     }
 }
 
