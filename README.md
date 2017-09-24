@@ -100,7 +100,12 @@ message EchoResponse {
 }
 ```
 * use grpc-gateway to generate an reverse proxy.
-* start grpc-gateway server see details from https://github.com/email2liyang/grpc-mate/tree/master/grpc-gateway 
+* start grpc-gateway server see details from https://github.com/email2liyang/grpc-mate/tree/master/grpc-gateway
+* test the rest api
+```bash
+curl -XPOST localhost:7070/grpc/api/v1/echo -d '{"ping":"hello"}'
+{"pong":"hello"}%
+``` 
 ### Promethues integration
 * use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
 * use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
