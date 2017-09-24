@@ -37,8 +37,14 @@ service ProductReadService {
     //calcualte each proeuct sore based on simple rule
     //used to demo bi directional stream
     rpc CalculateProductScore (stream Product) returns (stream CalculateProductScoreResponse) {
-
     }
+
+    rpc DownloadProductImage(DownloadProductImageRequest) returns(stream FileChunk){
+    }
+}
+
+message DownloadProductImageRequest {
+    int64 product_id = 1;
 }
 
 message DownloadProductsRequest {

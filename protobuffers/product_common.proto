@@ -15,3 +15,8 @@ enum ProductStatus {
     InStock = 0;
     OutStock = 1;
 }
+
+message FileChunk {
+    string file_name = 1;
+    bytes chunk_data = 2;
+}
