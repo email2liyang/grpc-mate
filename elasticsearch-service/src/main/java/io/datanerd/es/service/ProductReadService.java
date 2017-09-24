@@ -123,22 +123,20 @@ public class ProductReadService extends ProductReadServiceGrpc.ProductReadServic
 
   @Override
   public void downloadProductImage(DownloadProductImageRequest request, StreamObserver<DataChunk> responseObserver) {
-    BufferedInputStream imageStream = new BufferedInputStream(
-        productImageSeeker.seekProductImage(request.getProductId())
-    );
-
     try {
+      BufferedInputStream imageStream = new BufferedInputStream(
+          productImageSeeker.seekProductImage(request.getProductId())
+      );
       int bufferSize = 256 * 1024;// 256k
       byte[] buffer = new byte[bufferSize];
-      int offset = 0;
       int length;
-      while ((length = imageStream.read(buffer, offset, bufferSize)) != -1) {
+      while ((length = imageStream.read(buffer, 0, bufferSize)) != -1) {
         responseObserver.onNext(
             DataChunk.newBuilder().setData(ByteString.copyFrom(buffer, 0, length)).build()
         );
-        offset += length;
       }
       responseObserver.onCompleted();
+      imageStream.close();
       counter.labels("downloadProductImage", "success");
     } catch (Exception e) {
       counter.labels("downloadProductImage", "failed");
