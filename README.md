@@ -89,7 +89,7 @@ rpc DownloadProductImage(DownloadProductImageRequest) returns(stream DataChunk){
 }
 ```
 * [Server Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
-* [Client Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
+* [Client Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/ProductReadServiceTest.java#L196-L243)
 #### Restful endpoint
 * use [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) to bridge grpc service to restful endpoint
 * stream is not supported in http 1.1
