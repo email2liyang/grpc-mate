@@ -13,7 +13,7 @@ import io.grpc.ServerInterceptor;
 
 @Singleton
 public class ServiceInterceptor implements ServerInterceptor {
-
+  //ref https://github.com/grpc/grpc-java/blob/master/examples/src/main/java/io/grpc/examples/header/HeaderServerInterceptor.java
   private static Logger log = LoggerFactory.getLogger(ServiceInterceptor.class); //NOPMD
   static final Metadata.Key<String> CUSTOM_HEADER_KEY =
       Metadata.Key.of("custom_server_header_key", Metadata.ASCII_STRING_MARSHALLER);
