@@ -11,6 +11,7 @@ import com.github.javafaker.Faker;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import io.datanerd.es.server.ServiceInterceptor;
@@ -19,10 +20,8 @@ import io.datanerd.generated.es.EchoResponse;
 import io.datanerd.generated.es.EchoServiceGrpc;
 import io.grpc.Channel;
 import io.grpc.ClientInterceptors;
-import io.grpc.Server;
 import io.grpc.ServerInterceptors;
-import io.grpc.inprocess.InProcessChannelBuilder;
-import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.testing.GrpcServerRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,8 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EchoServiceTest {
 
   private Faker faker;
-  private Server server;
   private EchoServiceGrpc.EchoServiceBlockingStub stub;
+
+  @Rule
+  public GrpcServerRule grpcServerRule = new GrpcServerRule();
 
   @Before
   public void setUp() throws Exception {
@@ -43,14 +44,9 @@ public class EchoServiceTest {
     ServiceInterceptor serviceInterceptor = injector.getInstance(ServiceInterceptor.class);
     CallerInterceptor callerInterceptor = injector.getInstance(CallerInterceptor.class);
 
-    String serverName = faker.numerify("prod-read-server-###");
-    server = InProcessServerBuilder
-        .forName(serverName)
-        .addService(ServerInterceptors.intercept(echoService, serviceInterceptor))
-        .build()
-        .start();
+    grpcServerRule.getServiceRegistry().addService(ServerInterceptors.intercept(echoService, serviceInterceptor));
     Channel channel = ClientInterceptors.intercept(
-        InProcessChannelBuilder.forName(serverName).build(),
+        grpcServerRule.getChannel(),
         callerInterceptor);
     stub = EchoServiceGrpc.newBlockingStub(channel);
   }
@@ -58,7 +54,6 @@ public class EchoServiceTest {
   @After
   public void tearDown() throws Exception {
     faker = null;
-    server.shutdownNow();
   }
 
   @Test

@@ -12,6 +12,7 @@ import com.github.javafaker.Faker;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +36,9 @@ import io.datanerd.generated.es.DownloadProductsRequest;
 import io.datanerd.generated.es.ProductReadServiceGrpc;
 import io.datanerd.generated.es.SearchProductsRequest;
 import io.datanerd.generated.es.SearchProductsResponse;
-import io.grpc.Channel;
-import io.grpc.Server;
 import io.grpc.StatusRuntimeException;
-import io.grpc.inprocess.InProcessChannelBuilder;
-import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
+import io.grpc.testing.GrpcServerRule;
 import io.reactivex.subjects.PublishSubject;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,12 +53,14 @@ import static org.mockito.Mockito.when;
 
 public class ProductReadServiceTest {
 
+  @Rule
+  public GrpcServerRule grpcServerRule = new GrpcServerRule();
+
   private static Logger log = LoggerFactory.getLogger(ProductReadServiceTest.class); //NOPMD
   private Faker faker;
   private ProductDao productDao;
   private ProductImageSeeker productImageSeeker;
   private ProductReadService productReadService;
-  private Server server;
   private ProductReadServiceGrpc.ProductReadServiceBlockingStub blockingStub;
   private ProductReadServiceGrpc.ProductReadServiceStub stub;
 
@@ -74,15 +74,10 @@ public class ProductReadServiceTest {
       binder.bind(ProductImageSeeker.class).toProvider(() -> productImageSeeker);
     }).getInstance(ProductReadService.class);
 
-    String serverName = faker.numerify("prod-read-server-###");
-    server = InProcessServerBuilder
-        .forName(serverName)
-        .addService(productReadService)
-        .build()
-        .start();
-    Channel channel = InProcessChannelBuilder.forName(serverName).build();
-    blockingStub = ProductReadServiceGrpc.newBlockingStub(channel);
-    stub = ProductReadServiceGrpc.newStub(channel);
+    grpcServerRule.getServiceRegistry().addService(productReadService);
+
+    blockingStub = ProductReadServiceGrpc.newBlockingStub(grpcServerRule.getChannel());
+    stub = ProductReadServiceGrpc.newStub(grpcServerRule.getChannel());
   }
 
   @After
@@ -90,7 +85,6 @@ public class ProductReadServiceTest {
     faker = null;
     productDao = null;
     productReadService = null;
-    server.shutdownNow();
   }
 
   @Test
@@ -234,8 +228,8 @@ public class ProductReadServiceTest {
     assertThat(completed.get()).isTrue();
     assertThat(error.get()).isFalse();
 
-    try(InputStream destImageStream = new FileInputStream(imageFile);
-    InputStream origImageStream = Resources.getResource("Large_Scaled_Forest_Lizard.jpg").openStream()){
+    try (InputStream destImageStream = new FileInputStream(imageFile);
+         InputStream origImageStream = Resources.getResource("Large_Scaled_Forest_Lizard.jpg").openStream()) {
       assertThat(DigestUtils.md5Hex(destImageStream)).isEqualTo(
           DigestUtils.md5Hex(origImageStream)
       );

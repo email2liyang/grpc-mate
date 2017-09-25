@@ -8,13 +8,11 @@ import com.google.inject.util.Modules;
 
 import com.github.javafaker.Faker;
 
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.MapConfiguration;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,11 +22,8 @@ import io.datanerd.generated.common.Product;
 import io.datanerd.generated.common.ProductStatus;
 import io.datanerd.generated.es.ProductUpdateServiceGrpc;
 import io.datanerd.generated.es.UploadProductResponse;
-import io.grpc.Channel;
-import io.grpc.Server;
-import io.grpc.inprocess.InProcessChannelBuilder;
-import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
+import io.grpc.testing.GrpcServerRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,11 +33,13 @@ import static org.mockito.Mockito.verify;
 
 public class ProductUpdateServiceTest {
 
+  @Rule
+  public GrpcServerRule grpcServerRule = new GrpcServerRule();
+
   private Faker faker;
   private ProductDao productDao;
   private Injector injector;
   private ProductUpdateService productUpdateService;
-  private Server server;
   private ProductUpdateServiceGrpc.ProductUpdateServiceStub stub;
 
   @Before
@@ -57,19 +54,14 @@ public class ProductUpdateServiceTest {
     );
 
     productUpdateService = injector.getInstance(ProductUpdateService.class);
-    String serverName = faker.numerify("prod-update-server-###");
-    server = InProcessServerBuilder
-        .forName(serverName)
-        .addService(productUpdateService)
-        .build()
-        .start();
-    Channel channel = InProcessChannelBuilder.forName(serverName).build();
-    stub = ProductUpdateServiceGrpc.newStub(channel);
+    grpcServerRule.getServiceRegistry().addService(productUpdateService);
+
+    stub = ProductUpdateServiceGrpc.newStub(grpcServerRule.getChannel());
   }
 
   @After
   public void tearDown() throws Exception {
-    server.shutdownNow();
+
   }
 
   @Test
