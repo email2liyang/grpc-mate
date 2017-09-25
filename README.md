@@ -11,6 +11,7 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
   * [Server streaming](#server-streaming)
   * [Client streaming](#client-streaming)
   * [Bi-directional streaming](#bi-directional-streaming)
+  * [Interceptors](#interceptors)
   * [Transfer Large File](#transfer-large-file)
   * [Restful endpoint](#restful-endpoint)
 * [Promethues integration](#promethues-integration)
@@ -78,6 +79,9 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
 #### Bi-directional streaming
 * [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
+#### Interceptors
+* [ClientInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/CallerInterceptor.java)
+* [ServerInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/server/ServiceInterceptor.java)
 #### Transfer Large File
 * grpc is not designed to transfer large files, but we could leverage stream api to transfer any size of data in binary stream
 * see protobuf definition below we could use stream api to transfer any size of data in any format
@@ -227,6 +231,8 @@ MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
     );
 ```
 * use toProvider(()->xxx); to avoid dedicated provider logic to execute
+* use GrpcServerRule with Junit Rule to start a mock grpc server to test grpc, see [EchoServiceTest](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/EchoServiceTest.java)
+
 
 
 ### Proto buffer best practice
