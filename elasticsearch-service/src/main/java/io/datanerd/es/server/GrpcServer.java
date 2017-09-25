@@ -12,6 +12,7 @@ import io.datanerd.es.service.EchoService;
 import io.datanerd.es.service.ProductReadService;
 import io.datanerd.es.service.ProductUpdateService;
 import io.grpc.Server;
+import io.grpc.ServerInterceptors;
 import io.grpc.netty.NettyServerBuilder;
 
 @Singleton
@@ -24,6 +25,8 @@ class GrpcServer {
   private ProductUpdateService productUpdateService;
   @Inject
   private EchoService echoService;
+  @Inject
+  private ServiceInterceptor serviceInterceptor;
 
   /**
    * Start Netty Grpc Server.
@@ -40,7 +43,7 @@ class GrpcServer {
             .forPort(port)
             .addService(productReadService)
             .addService(productUpdateService)
-            .addService(echoService)
+            .addService(ServerInterceptors.intercept(echoService, serviceInterceptor))
             .build();
 
     server.start();

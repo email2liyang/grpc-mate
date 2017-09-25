@@ -5,6 +5,7 @@
 package io.datanerd.es.service;
 
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import com.github.javafaker.Faker;
 
@@ -12,11 +13,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.datanerd.es.server.ServiceInterceptor;
 import io.datanerd.generated.es.EchoRequest;
 import io.datanerd.generated.es.EchoResponse;
 import io.datanerd.generated.es.EchoServiceGrpc;
 import io.grpc.Channel;
+import io.grpc.ClientInterceptors;
 import io.grpc.Server;
+import io.grpc.ServerInterceptors;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 
@@ -34,16 +38,20 @@ public class EchoServiceTest {
   @Before
   public void setUp() throws Exception {
     faker = new Faker();
-
-    EchoService echoService = Guice.createInjector().getInstance(EchoService.class);
+    Injector injector = Guice.createInjector();
+    EchoService echoService = injector.getInstance(EchoService.class);
+    ServiceInterceptor serviceInterceptor = injector.getInstance(ServiceInterceptor.class);
+    CallerInterceptor callerInterceptor = injector.getInstance(CallerInterceptor.class);
 
     String serverName = faker.numerify("prod-read-server-###");
     server = InProcessServerBuilder
         .forName(serverName)
-        .addService(echoService)
+        .addService(ServerInterceptors.intercept(echoService, serviceInterceptor))
         .build()
         .start();
-    Channel channel = InProcessChannelBuilder.forName(serverName).build();
+    Channel channel = ClientInterceptors.intercept(
+        InProcessChannelBuilder.forName(serverName).build(),
+        callerInterceptor);
     stub = EchoServiceGrpc.newBlockingStub(channel);
   }
 
