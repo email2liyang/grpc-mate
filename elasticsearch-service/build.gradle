@@ -30,11 +30,11 @@ repositories {
 mainClassName = "io.datanerd.es.server.ServiceLauncher"
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.2.0"
+        artifact = "com.google.protobuf:protoc:3.3.0"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.4.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.6.1'
         }
     }
     generateProtoTasks {
@@ -77,9 +77,9 @@ dependencies {
     compile 'org.apache.commons:commons-configuration2:2.1.1'
 
     // gRPC
-    compile 'io.grpc:grpc-netty:1.4.0'
-    compile 'io.grpc:grpc-protobuf:1.4.0'
-    compile 'io.grpc:grpc-stub:1.4.0'
+    compile 'io.grpc:grpc-netty:1.6.1'
+    compile 'io.grpc:grpc-protobuf:1.6.1'
+    compile 'io.grpc:grpc-stub:1.6.1'
 
     // elasticsearch
     compile 'org.elasticsearch.client:transport:5.2.1'
