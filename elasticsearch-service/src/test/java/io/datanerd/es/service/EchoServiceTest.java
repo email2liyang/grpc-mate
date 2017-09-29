@@ -21,9 +21,6 @@ import io.grpc.testing.GrpcServerRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author ivan.li@practiceinsight.io
- */
 public class EchoServiceTest {
 
   private Faker faker;
