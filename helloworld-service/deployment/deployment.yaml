@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: helloworld-service
+spec:
+  revisionHistoryLimit: 4
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: helloworld-service
+    spec:
+      containers:
+      - name: helloworld-service
+        image: email2liyang/helloworld-service:1.0.1
+        imagePullPolicy: Always
+        ports:
+        - name: grpc
+          containerPort: 8080

@@ -11,7 +11,7 @@ imageESService:
 imageHelloService:
 	cp helloworld-service/build/distributions/helloworld-service.tar helloworld-service/deployment/
 	pushd helloworld-service/deployment && \
-	docker build -t email2liyang/helloworld-service:1.0.0 . && \
+	docker build -t email2liyang/helloworld-service:1.0.1 . && \
 	rm helloworld-service.tar && \
 	popd
 coveralls:
