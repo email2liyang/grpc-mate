@@ -17,3 +17,23 @@ spec:
         ports:
         - name: grpc
           containerPort: 8080
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "--http_port=9000",
+          "--backend=127.0.0.1:8080",
+          "--service=helloworld-service.endpoints.pi-devops.cloud.goog",
+          "--version=2018-07-19r0",
+          "--service_account_key=/etc/nginx/creds/service-account-creds.json"
+        ]
+        ports:
+          - name: http
+            containerPort: 9000
+        volumeMounts:
+          - mountPath: /etc/nginx/creds
+            name: service-account-creds
+            readOnly: true
+      volumes:
+        - name: service-account-creds
+          secret:
+            secretName: service-account-creds
