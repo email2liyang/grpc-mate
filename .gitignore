@@ -38,5 +38,6 @@ atlassian-ide-plugin.xml
 **/.tar
 **/.clover
 **/generated*
+**/*.pb
 .gitignore
 

@@ -21,9 +21,9 @@ spec:
         image: gcr.io/endpoints-release/endpoints-runtime:1
         args: [
           "--http_port=9000",
-          "--backend=127.0.0.1:8080",
+          "--backend=grpc://127.0.0.1:8080",
           "--service=helloworld-service.endpoints.pi-devops.cloud.goog",
-          "--version=2018-07-19r0",
+          "--version=2018-07-19r2",
           "--service_account_key=/etc/nginx/creds/service-account-creds.json"
         ]
         ports:
