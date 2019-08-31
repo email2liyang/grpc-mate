@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "io.datanerd.generated.es";
 option java_multiple_files = true;
-import "product_common.proto";
+import "grpc_mate/product_common.proto";
 import "google/api/annotations.proto";
 //make sure this can be used in grpc gateway
 option go_package = "datanerd";
