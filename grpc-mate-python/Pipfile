@@ -9,6 +9,7 @@ verify_ssl = true
 grpcio = "*"
 grpcio-tools = "*"
 protobuf = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.6"
