@@ -10,6 +10,7 @@ grpcio = "*"
 grpcio-tools = "*"
 protobuf = "*"
 pyyaml = "*"
+pytest-grpc = "*"
 
 [requires]
 python_version = "3.6"
