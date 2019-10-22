@@ -1,3 +1,4 @@
+import grpc
 import pytest
 from grpc_mate.helloworld_pb2 import HelloRequest
 
@@ -29,3 +30,11 @@ def test_SayHello(grpc_stub):
 
     assert response.message == f'hello {hello_request.name}'
 
+
+def integration_test_SayHello():
+    from grpc_mate.helloworld_pb2_grpc import GreeterStub
+    channel = grpc.insecure_channel('localhost:8080')
+    stub = GreeterStub(channel)
+    hello_request = HelloRequest(name='local')
+    response = stub.SayHello(hello_request)
+    assert response.message == f'hello {hello_request.name}'
