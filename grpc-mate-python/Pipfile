@@ -11,6 +11,7 @@ grpcio-tools = "*"
 protobuf = "*"
 pyyaml = "*"
 pytest-grpc = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.6"
