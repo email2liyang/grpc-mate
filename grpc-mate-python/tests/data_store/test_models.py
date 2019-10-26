@@ -7,6 +7,7 @@ from grpc_mate.product_common_pb2 import InStock
 
 from faker import Faker
 
+
 @pytest.fixture(autouse=True, scope='function')
 def create_schema():
     if engine.url.__str__() == 'sqlite:///:memory:':
