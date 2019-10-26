@@ -1,10 +1,11 @@
 import pytest
-
+from decimal import Decimal
 from data_store import engine
 from data_store.db import session_scope
 from data_store.models import Base, DBProduct
 from grpc_mate.product_common_pb2 import InStock
 
+from faker import Faker
 
 @pytest.fixture(autouse=True, scope='function')
 def create_schema():
@@ -13,7 +14,9 @@ def create_schema():
 
 
 def test_db_products():
-    product = DBProduct(product_name='iPhone', product_price=2015.60, product_status=InStock, category='IT')
+    faker = Faker()
+    product = DBProduct(product_name=faker.name(), product_price=Decimal(faker.random_int() / 100),
+                        product_status=InStock, category=faker.name())
     with session_scope() as session:
         session.add(product)
         my_product = session.query(DBProduct).one()

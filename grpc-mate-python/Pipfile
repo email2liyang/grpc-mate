@@ -4,13 +4,15 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+faker = "*"
+v = {editable = true,version = "*"}
+pytest-grpc = "*"
 
 [packages]
 grpcio = "*"
 grpcio-tools = "*"
 protobuf = "*"
 pyyaml = "*"
-pytest-grpc = "*"
 sqlalchemy = "*"
 
 [requires]
