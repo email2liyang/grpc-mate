@@ -17,8 +17,10 @@ def create_schema():
 
 def test_db_products():
     faker = Faker()
-    product = DBProduct(product_name=faker.name(), product_price=Decimal(faker.random_int() / 100),
-                        product_status=InStock, category=faker.name())
+    product = DBProduct(product_name=faker.name(),
+                        product_price=Decimal(faker.random_int() / 100),
+                        product_status=InStock,
+                        category=faker.name())
     my_product = None
     with session_scope() as session:
         session.add(product)
