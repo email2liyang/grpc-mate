@@ -8,3 +8,6 @@ protoc:
 	touch grpc_mate/__init__.py
 	touch google/__init__.py
 	touch google/api/__init__.py
+
+pytest:
+	pytest --grpc-fake-server
