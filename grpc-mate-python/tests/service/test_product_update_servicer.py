@@ -1,10 +1,9 @@
 import pytest
 
-from grpc_mate.product_common_pb2 import Product, InStock
-from grpc_mate.product_search_engine_pb2 import UploadProductResponse
-
 from data_store import engine
 from data_store.models import Base
+from grpc_mate.product_common_pb2 import Product, InStock
+from grpc_mate.product_search_engine_pb2 import UploadProductResponse
 
 
 @pytest.fixture(scope='module')
@@ -26,10 +25,12 @@ def grpc_stub_cls(grpc_channel):
 
     return ProductUpdateServiceStub
 
+
 @pytest.fixture(autouse=True, scope='module')
 def create_schema():
     if engine.url.__str__() == 'sqlite:///:memory:':
         Base.metadata.create_all(engine)
+
 
 def test_UploadProduct(grpc_stub):
     products = [
