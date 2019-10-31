@@ -1,7 +1,8 @@
 import pytest
 
 from data_store import engine
-from data_store.models import Base
+from data_store.models import Base, DBProduct
+from data_store.db import session_scope
 from grpc_mate.product_common_pb2 import Product, InStock
 from grpc_mate.product_search_engine_pb2 import UploadProductResponse
 
@@ -26,16 +27,39 @@ def grpc_stub_cls(grpc_channel):
     return ProductUpdateServiceStub
 
 
-@pytest.fixture(autouse=True, scope='module')
+@pytest.fixture(autouse=True, scope='function')
 def create_schema():
     if engine.url.__str__() == 'sqlite:///:memory:':
         Base.metadata.create_all(engine)
+        yield None
+        Base.metadata.drop_all(engine)
 
 
-def test_UploadProduct(grpc_stub):
+
+def test_UploadProduct_insert_one(grpc_stub):
     products = [
         Product(product_name='product_name_1', product_price=1.0, product_status=InStock, category='category_1')]
     grpc_stub.UploadProduct(iter(products))
+    with session_scope() as session:
+        rows = session.query(DBProduct).count()
+        assert rows == 1
+        my_product = session.query(DBProduct).one()
+        product = products[0]
+        assert my_product.product_id is not None
+        assert my_product.product_name == product.product_name
+        assert my_product.product_price == product.product_price
+        assert my_product.product_status == product.product_status
+        assert my_product.category == product.category
+
+
+def test_UploadProduct_insert_two(grpc_stub):
+    products = [
+        Product(product_name='product_name_1', product_price=1.0, product_status=InStock, category='category_1'),
+        Product(product_name='product_name_2', product_price=2.0, product_status=InStock, category='category_2')]
+    grpc_stub.UploadProduct(iter(products))
+    with session_scope() as session:
+        rows = session.query(DBProduct).count()
+        assert rows == 2
 
 
 def test_UploadProductResponse_enum():
