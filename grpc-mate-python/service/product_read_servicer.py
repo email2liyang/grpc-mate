@@ -19,7 +19,12 @@ def db_product_to_protobuf_product(db_product):
 
 class ProductReadServiceServicer(grpc_mate.product_search_engine_pb2_grpc.ProductReadServiceServicer):
     def DownloadProducts(self, request, context):
-        return super().DownloadProducts(request, context)
+        with session_scope() as session:
+            result = session.query(DBProduct) \
+                .filter(DBProduct.category == request.category) \
+                .all()
+            for product in result:
+                yield db_product_to_protobuf_product(product)
 
     def SearchProducts(self, request, context):
         with session_scope() as session:
