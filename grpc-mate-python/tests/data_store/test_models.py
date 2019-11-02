@@ -27,8 +27,8 @@ def test_db_products():
         session.add(product)
         my_product = session.query(DBProduct).one()
         session.expunge(my_product)
-        assert my_product.product_id is not None
-        assert my_product.product_name == product.product_name
-        assert my_product.product_price == product.product_price
-        assert my_product.product_status == product.product_status
-        assert my_product.category == product.category
+    assert my_product.product_id is not None
+    assert my_product.product_name == product.product_name
+    assert my_product.product_price == product.product_price
+    assert my_product.product_status == product.product_status
+    assert my_product.category == product.category

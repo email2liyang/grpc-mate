@@ -24,7 +24,7 @@ class ProductReadServiceServicer(grpc_mate.product_search_engine_pb2_grpc.Produc
     def SearchProducts(self, request, context):
         with session_scope() as session:
             result = session.query(DBProduct) \
-                .filter(DBProduct.product_name.ilike('%{request.key_word}%')) \
+                .filter(DBProduct.product_name.like(f'%{request.key_word}%')) \
                 .order_by(DBProduct.product_id.asc()) \
                 .limit(limit=request.limit) \
                 .all()
