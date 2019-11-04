@@ -95,3 +95,12 @@ def test_DownloadProducts_exist(grpc_stub):
 
     # assert we have 5 items
     assert len(list(result)) == 5
+
+
+def test_DownloadProducts_none_exist(grpc_stub):
+    faker = Faker()
+    category = faker.name()
+    result = grpc_stub.DownloadProducts(DownloadProductsRequest(category=category))
+
+    # assert we have 0 items
+    assert len(list(result)) == 0
