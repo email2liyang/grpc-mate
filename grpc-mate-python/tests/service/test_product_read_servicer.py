@@ -7,7 +7,7 @@ from data_store import engine
 from data_store.db import session_scope
 from data_store.models import Base, DBProduct
 from grpc_mate.product_common_pb2 import InStock
-from grpc_mate.product_search_engine_pb2 import SearchProductsRequest
+from grpc_mate.product_search_engine_pb2 import SearchProductsRequest, DownloadProductsRequest
 
 
 @pytest.fixture(scope='module')
@@ -78,3 +78,20 @@ def test_SearchProducts_limit(grpc_stub):
     assert len(response.products) == 2
     assert keyword in response.products[0].product_name
     assert keyword in response.products[1].product_name
+
+
+def test_DownloadProducts_exist(grpc_stub):
+    faker = Faker()
+    category = faker.name()
+    # save to db
+    with session_scope() as session:
+        for idx in range(5):
+            product = DBProduct(product_name=f'{faker.name()}_{idx}',
+                                product_price=Decimal(faker.random_int() / 100),
+                                product_status=InStock,
+                                category=category)
+            session.add(product)
+    result = grpc_stub.DownloadProducts(DownloadProductsRequest(category=category))
+
+    # assert we have 5 items
+    assert len(list(result)) == 5
