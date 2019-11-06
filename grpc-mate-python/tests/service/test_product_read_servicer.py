@@ -6,7 +6,7 @@ from faker import Faker
 from data_store import engine
 from data_store.db import session_scope
 from data_store.models import Base, DBProduct
-from grpc_mate.product_common_pb2 import InStock
+from grpc_mate.product_common_pb2 import InStock, Product
 from grpc_mate.product_search_engine_pb2 import SearchProductsRequest, DownloadProductsRequest
 
 
@@ -104,3 +104,18 @@ def test_DownloadProducts_none_exist(grpc_stub):
 
     # assert we have 0 items
     assert len(list(result)) == 0
+
+
+def product_generator():
+    for i in range(0, 5):
+        yield Product(product_id=i, product_name=f'product_name_{i}', product_price=i, product_status=InStock,
+                      category='category')
+
+
+def test_CalculateProductScore(grpc_stub):
+    product_iterator = product_generator()
+    result = grpc_stub.CalculateProductScore(product_iterator)
+    all_result = list(result)
+    assert len(all_result) == 5
+    for response in all_result:
+        assert int(response.product.product_price * 2) == response.score

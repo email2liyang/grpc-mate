@@ -35,7 +35,6 @@ def create_schema():
         Base.metadata.drop_all(engine)
 
 
-
 def test_UploadProduct_insert_one(grpc_stub):
     products = [
         Product(product_name='product_name_1', product_price=1.0, product_status=InStock, category='category_1')]
@@ -60,7 +59,6 @@ def test_UploadProduct_insert_two(grpc_stub):
     with session_scope() as session:
         rows = session.query(DBProduct).count()
         assert rows == 2
-
 
 def test_UploadProductResponse_enum():
     """
