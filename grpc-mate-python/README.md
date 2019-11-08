@@ -8,3 +8,4 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * [how to use sqlalchemy to persist data](https://www.vipmind.me/programing/python/sqlalchemy-makes-python-orm-easy.html)
 * [how to use protobuf enum in python](https://www.vipmind.me/programing/python/understand-protobuf-enum-in-python.html)
 * [how to do client streaming](https://www.vipmind.me/programing/python/how-to-do-grpc-client-stream-upload.html)
+* [how to do server streaming](https://www.vipmind.me/programing/python/how-to-do-grpc-server-stream.html)
