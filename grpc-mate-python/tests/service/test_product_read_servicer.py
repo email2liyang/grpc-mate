@@ -1,5 +1,7 @@
 from decimal import Decimal
-
+import os
+import filecmp
+from pathlib import Path
 import pytest
 from faker import Faker
 
@@ -7,7 +9,8 @@ from data_store import engine
 from data_store.db import session_scope
 from data_store.models import Base, DBProduct
 from grpc_mate.product_common_pb2 import InStock, Product
-from grpc_mate.product_search_engine_pb2 import SearchProductsRequest, DownloadProductsRequest
+from grpc_mate.product_search_engine_pb2 import SearchProductsRequest, DownloadProductsRequest, \
+    DownloadProductImageRequest
 
 
 @pytest.fixture(scope='module')
@@ -106,5 +109,14 @@ def test_DownloadProducts_none_exist(grpc_stub):
     assert len(list(result)) == 0
 
 
+def test_DownloadProductImage(grpc_stub):
+    faker = Faker()
+    target_image_file = faker.file_name(category=None, extension='png')
+    data_chunks = grpc_stub.DownloadProductImage(DownloadProductImageRequest(product_id=1))
+    with open(target_image_file, 'wb') as f:
+        for chunk in data_chunks:
+            f.write(chunk.data)
 
-
+    original_image_file = Path(__file__).resolve().parent.parent.parent.joinpath('images/python-grpc.png')
+    assert filecmp.cmp(original_image_file, target_image_file)
+    os.remove(target_image_file)

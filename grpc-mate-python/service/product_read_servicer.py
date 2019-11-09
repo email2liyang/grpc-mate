@@ -1,9 +1,10 @@
 import logging
+from pathlib import Path
 
 import grpc_mate.product_search_engine_pb2_grpc
 from data_store.db import session_scope
 from data_store.models import DBProduct
-from grpc_mate.product_common_pb2 import Product
+from grpc_mate.product_common_pb2 import Product, DataChunk
 from grpc_mate.product_search_engine_pb2 import SearchProductsResponse, CalculateProductScoreResponse
 
 logger = logging.getLogger(__name__)
@@ -41,4 +42,12 @@ class ProductReadServiceServicer(grpc_mate.product_search_engine_pb2_grpc.Produc
             yield CalculateProductScoreResponse(product=product, score=int(product.product_price * 2))
 
     def DownloadProductImage(self, request, context):
-        return super().DownloadProductImage(request, context)
+        chunk_size = 1024
+        image_path = Path(__file__).resolve().parent.parent.joinpath('images/python-grpc.png')
+
+        with image_path.open('rb') as f:
+            while True:
+                chunk = f.read(chunk_size)
+                if not chunk:
+                    break
+                yield DataChunk(data=chunk)
