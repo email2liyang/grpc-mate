@@ -1,14 +1,15 @@
-from decimal import Decimal
-import os
 import filecmp
+import os
+from decimal import Decimal
 from pathlib import Path
+
 import pytest
 from faker import Faker
 
 from data_store import engine
 from data_store.db import session_scope
 from data_store.models import Base, DBProduct
-from grpc_mate.product_common_pb2 import InStock, Product
+from grpc_mate.product_common_pb2 import InStock
 from grpc_mate.product_search_engine_pb2 import SearchProductsRequest, DownloadProductsRequest, \
     DownloadProductImageRequest
 
