@@ -1,13 +1,13 @@
 import logging.config
-import yaml
-
 from concurrent import futures
 
 import grpc
+import yaml
 
 import grpc_mate.helloworld_pb2_grpc
-from service.greeter_servicer import GreeterServicer
 import grpc_mate.product_search_engine_pb2_grpc
+from service.greeter_servicer import GreeterServicer
+from service.product_read_servicer import ProductReadServiceServicer
 from service.product_update_servicer import ProductUpdateServiceServicer
 
 # Create a custom logger
@@ -23,6 +23,8 @@ def serve():
     grpc_mate.helloworld_pb2_grpc.add_GreeterServicer_to_server(GreeterServicer(), server)
     grpc_mate.product_search_engine_pb2_grpc.add_ProductUpdateServiceServicer_to_server(ProductUpdateServiceServicer(),
                                                                                         server)
+    grpc_mate.product_search_engine_pb2_grpc.add_ProductReadServiceServicer_to_server(ProductReadServiceServicer(),
+                                                                                      server)
     server.add_insecure_port('[::]:8080')
     server.start()
     logger.debug('grpc server started at port 8080')
