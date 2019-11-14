@@ -10,4 +10,5 @@ gRPC-Mate demostrate best practice for gRPC based micro service.
 * [how to do client streaming](https://www.vipmind.me/programing/python/how-to-do-grpc-client-stream-upload.html)
 * [how to do server streaming](https://www.vipmind.me/programing/python/how-to-do-grpc-server-stream.html)
 * [how to output large binary stream via data chunk](https://www.vipmind.me/programing/python/how-to-output-large-binary-stream-via-data-chunk-in-grpc.html)
+* [How to config python log in Grpc Server](https://www.vipmind.me/programing/python/how-to-config-python-log-in-grpc-server.html)
 
