@@ -39,7 +39,7 @@ the project will demonstrate an online store search service including
   * use JsonFormat.Printer to convert proto buffer message into json
   * use JsonFormat.Parser to parse json into proto buffer 
 #### Simple RPC
-* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L23)
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L23)
 * we could use JsonFormat.Parser to convert es document into protobuf message
 ```java
       Product.Builder builder = Product.newBuilder();
@@ -47,7 +47,7 @@ the project will demonstrate an online store search service including
       responseBuilder.addProducts(builder.build());
 ```
 #### Server streaming
-* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L39)
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L39)
 * with server streaming , user could pass PublishSubject to dao layer to connect the real data with ResponseObserver
 ```java
 PublishSubject<Product> productPublishSubject = PublishSubject.create();
@@ -60,8 +60,8 @@ PublishSubject<Product> productPublishSubject = PublishSubject.create();
     disposable.dispose();
 ``` 
 #### Client streaming
-* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductUpdateService.java#L29)
-* use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductUpdateService.java#L29)
+* use [RxStreamObserver](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/RxStreamObserver.java) to connect grpc StreamObserver and [rxJava](https://github.com/ReactiveX/RxJava) so that in grpc service, we could use rx style programming
 ```java
 PublishSubject<Product> publishSubject = PublishSubject.create();
     publishSubject
@@ -77,11 +77,11 @@ PublishSubject<Product> publishSubject = PublishSubject.create();
         .subscribe();
 ```
 #### Bi-directional streaming
-* [sample](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
+* [sample](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L49)
 * use grpc's InProcessServer to test grpc service
 #### Interceptors
-* [ClientInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/CallerInterceptor.java)
-* [ServerInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/server/ServiceInterceptor.java)
+* [ClientInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/test/java/io/datanerd/es/service/CallerInterceptor.java)
+* [ServerInterceptor](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/server/ServiceInterceptor.java)
 #### Transfer Large File
 * grpc is not designed to transfer large files, but we could leverage stream api to transfer any size of data in binary stream
 * see protobuf definition below we could use stream api to transfer any size of data in any format
@@ -92,8 +92,8 @@ message DataChunk {
 rpc DownloadProductImage(DownloadProductImageRequest) returns(stream DataChunk){
 }
 ```
-* [Server Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
-* [Client Side](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/ProductReadServiceTest.java#L196-L243)
+* [Server Side](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java#L125-L145)
+* [Client Side](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/test/java/io/datanerd/es/service/ProductReadServiceTest.java#L196-L243)
 #### Restful endpoint
 * use [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) to bridge grpc service to restful endpoint
 * stream is not supported in http 1.1
@@ -124,10 +124,10 @@ curl -XPOST localhost:7070/grpc/api/v1/echo -d '{"ping":"hello"}'
 {"pong":"hello"}%
 ``` 
 ### Promethues integration
-* use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
-* use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
-* use CounterFactory to create counter and use the counter to record service metrics see [ProductReadService.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java)
-* use [NanoHttpD](https://github.com/NanoHttpd/nanohttpd) based [HttpServer.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/main/java/io/datanerd/es/server/HttpServer.java) to serve metrics and grpc health info
+* use [Auto Value](https://github.com/google/auto/tree/master/value) to define the value class with builder, see [Metric.java](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/metrics/Metric.java)
+* use [CounterFactory.java](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/metrics/CounterFactory.java) to normalize Prometheus Counter's path and instance
+* use CounterFactory to create counter and use the counter to record service metrics see [ProductReadService.java](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/service/ProductReadService.java)
+* use [NanoHttpD](https://github.com/NanoHttpd/nanohttpd) based [HttpServer.java](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/main/java/io/datanerd/es/server/HttpServer.java) to serve metrics and grpc health info
 ### Kubernetes Deployment
 * [sample](https://github.com/email2liyang/grpc-mate/tree/master/elasticsearch-service/deployment)
 * use property file to manage system property and add the system property to configmap, so it's easy to debug program locally by specify the property file from system env.
@@ -209,7 +209,7 @@ productDao = mock(ProductDao.class);
 ```
 ### Junit best practice
 * use [testcontainers-java](https://github.com/testcontainers/testcontainers-java), we could launch any docker image to support any env related class
-* it's convenient to use JUnit Rule and ClassRule with docker container for test see [TransportClientProviderTest.java](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/guice/TransportClientProviderTest.java) for more details
+* it's convenient to use JUnit Rule and ClassRule with docker container for test see [TransportClientProviderTest.java](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/test/java/io/datanerd/es/guice/TransportClientProviderTest.java) for more details
 ```java
   @ClassRule
   public static final GenericContainer esContainer = 
@@ -231,7 +231,7 @@ MapConfiguration memoryParams = new MapConfiguration(new HashMap<>());
     );
 ```
 * use toProvider(()->xxx); to avoid dedicated provider logic to execute
-* use GrpcServerRule with Junit Rule to start a mock grpc server to test grpc, see [EchoServiceTest](https://github.com/email2liyang/grpc-mate/blob/master/elasticsearch-service/src/test/java/io/datanerd/es/service/EchoServiceTest.java)
+* use GrpcServerRule with Junit Rule to start a mock grpc server to test grpc, see [EchoServiceTest](https://github.com/email2liyang/grpc-mate/blob/master/grpc-mate-java/elasticsearch-service/src/test/java/io/datanerd/es/service/EchoServiceTest.java)
 
 
 
