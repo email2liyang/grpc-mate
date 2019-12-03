@@ -13,6 +13,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,8 +21,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=_b('\n io.datanerd.generated.helloworldP\001'),
-  serialized_pb=_b('\n\x1agrpc_mate/helloworld.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t23\n\x07Greeter\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x42$\n io.datanerd.generated.helloworldP\x01\x62\x06proto3')
-)
+  serialized_pb=_b('\n\x1agrpc_mate/helloworld.proto\x1a\x1cgoogle/api/annotations.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t2S\n\x07Greeter\x12H\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\" \x82\xd3\xe4\x93\x02\x1a\"\x15/api/v1/greeter/hello:\x01*B$\n io.datanerd.generated.helloworldP\x01\x62\x06proto3')
+  ,
+  dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,])
 
 
 
@@ -52,8 +54,8 @@ _HELLOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=30,
-  serialized_end=58,
+  serialized_start=60,
+  serialized_end=88,
 )
 
 
@@ -83,8 +85,8 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=60,
-  serialized_end=89,
+  serialized_start=90,
+  serialized_end=119,
 )
 
 DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
@@ -114,8 +116,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=91,
-  serialized_end=142,
+  serialized_start=121,
+  serialized_end=204,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
@@ -124,7 +126,7 @@ _GREETER = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_HELLOREQUEST,
     output_type=_HELLOREPLY,
-    serialized_options=None,
+    serialized_options=_b('\202\323\344\223\002\032\"\025/api/v1/greeter/hello:\001*'),
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_GREETER)

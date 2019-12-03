@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grpc-mate-python
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grpc-mate-python
+    spec:
+      imagePullSecrets:
+      - name: face-staging-docker-registry
+      containers:
+      - name: grpc-mate-python
+        image: us.gcr.io/face-staging/grpc-mate-python:1.0.0
+        imagePullPolicy: Always
+        resources:
+         requests:
+          memory: 128Mi
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - ps -ef | grep server | grep -v "grep"
+          initialDelaySeconds: 8
+          timeoutSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - ps -ef | grep server | grep -v "grep"
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        ports:
+        - name: grpc
+          containerPort: 8080
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/appconfig/face-prod-ops.json
+        volumeMounts:
+        - name: google-face-prod-ops-service-account-key
+          mountPath: /etc/appconfig
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "--http_port=9000",
+          "--backend=grpc://127.0.0.1:8080",
+          "--service=greeter.endpoints.face-prod.cloud.goog",
+          "--version=2019-12-03r0",
+          "--service_account_key=/etc/nginx/creds/face-prod-ops.json"
+        ]
+        ports:
+        - name: http
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/nginx/creds
+          name: google-face-prod-ops-service-account-key
+          readOnly: true
+      volumes:
+      - name: google-face-prod-ops-service-account-key
+        secret:
+          secretName: google-face-prod-ops-service-account-key

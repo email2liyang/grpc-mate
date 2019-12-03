@@ -11,3 +11,11 @@ protoc:
 
 pytest:
 	pytest --grpc-fake-server
+
+clean:
+	find data_store/ google/ grpc_mate/ server/ service/ -name "__pycache__" -type d  -exec rm -r "{}" \;
+tar:
+	mkdir -p target/
+	rm -fR target/*
+	tar cvf grpc-mate-python.tar data_store/ google/ grpc_mate/ server/ service/ requirements.txt
+	mv grpc-mate-python.tar target/

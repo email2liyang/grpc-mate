@@ -1,5 +1,6 @@
 import logging.config
 from concurrent import futures
+from pathlib import Path
 
 import grpc
 import yaml
@@ -11,7 +12,7 @@ from service.product_read_servicer import ProductReadServiceServicer
 from service.product_update_servicer import ProductUpdateServiceServicer
 
 # Create a custom logger
-with open('logging.yaml', 'r') as f:
+with Path(__file__).resolve().parent.joinpath('logging.yaml').open('r') as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
 
