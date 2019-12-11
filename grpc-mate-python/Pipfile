@@ -8,6 +8,7 @@ faker = "*"
 v = {editable = true,version = "*"}
 pytest-grpc = "*"
 pytest-cov = "*"
+pycodestyle = "*"
 
 [packages]
 grpcio = "*"

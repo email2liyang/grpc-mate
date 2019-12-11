@@ -12,6 +12,9 @@ protoc:
 pytest:
 	pytest --grpc-fake-server
 
+style:
+	pycodestyle service data_store server
+
 clean:
 	find data_store/ google/ grpc_mate/ server/ service/ -name "__pycache__" -type d  -exec rm -r "{}" \;
 tar:
