@@ -1,7 +1,0 @@
-language: java
-jdk:
-   - oraclejdk8
-build:
-  ci:
-    - make pull_image
-    - ./gradlew clean build

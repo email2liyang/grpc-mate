@@ -1,2 +1,0 @@
-include 'elasticsearch-service'
-include 'helloworld-service'
